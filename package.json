@@ -1,0 +1,28 @@
+{
+  "name": "ai-cmo-backend",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "start": "vercel dev",
+    "dev": "ts-node server.ts",
+    "typecheck": "tsc --noEmit",
+    "db:migrate": "dotenv -- sh -c 'psql \"$POSTGRES_URL\" -f migrations/001_init.sql'"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.24.0",
+    "@types/pg": "^8.20.0",
+    "axios": "^1.7.0",
+    "cheerio": "^1.0.0",
+    "pg": "^8.20.0"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.6",
+    "@types/node": "^20.0.0",
+    "@vercel/node": "^3.2.0",
+    "dotenv-cli": "^11.0.0",
+    "express": "^5.2.1",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.4.0",
+    "vercel": "^34.0.0"
+  }
+}

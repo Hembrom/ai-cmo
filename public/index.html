@@ -1,0 +1,635 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>AI CMO — Market Strategy Intelligence</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #080810;
+      --surface: #0e0e1a;
+      --surface2: #13131f;
+      --border: #1e1e30;
+      --border2: #252538;
+      --text: #e2e2f0;
+      --muted: #6b6b8a;
+      --accent: #6366f1;
+      --accent-glow: rgba(99,102,241,0.35);
+      --accent-hover: #818cf8;
+      --green: #22c55e;
+      --red: #f87171;
+      --yellow: #facc15;
+      --radius: 14px;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Inter', system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      top: -200px; left: -200px;
+      width: 600px; height: 600px;
+      background: radial-gradient(circle, rgba(99,102,241,0.12) 0%, transparent 70%);
+      pointer-events: none; z-index: 0;
+    }
+    body::after {
+      content: '';
+      position: fixed;
+      bottom: -200px; right: -100px;
+      width: 500px; height: 500px;
+      background: radial-gradient(circle, rgba(139,92,246,0.08) 0%, transparent 70%);
+      pointer-events: none; z-index: 0;
+    }
+
+    .shell {
+      position: relative; z-index: 1;
+      max-width: 780px;
+      margin: 0 auto;
+      padding: 3rem 1.5rem 6rem;
+    }
+
+    .header { text-align: center; margin-bottom: 3.5rem; }
+
+    .badge {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: rgba(99,102,241,0.12);
+      border: 1px solid rgba(99,102,241,0.3);
+      color: var(--accent-hover);
+      font-size: 0.72rem; font-weight: 600; letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 4px 12px; border-radius: 100px;
+      margin-bottom: 1.25rem;
+    }
+    .badge-dot {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: var(--accent-hover);
+      animation: pulse 2s infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.5; transform: scale(0.8); }
+    }
+
+    .header h1 {
+      font-size: clamp(1.8rem, 5vw, 2.6rem);
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      line-height: 1.15;
+      background: linear-gradient(135deg, #fff 0%, #a5b4fc 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 0.75rem;
+    }
+
+    .header p {
+      color: var(--muted);
+      font-size: 1rem;
+      line-height: 1.6;
+      max-width: 480px;
+      margin: 0 auto;
+    }
+
+    .url-bar {
+      background: var(--surface);
+      border: 1px solid var(--border2);
+      border-radius: calc(var(--radius) + 4px);
+      padding: 6px 6px 6px 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 1rem;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .url-bar:focus-within {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px var(--accent-glow);
+    }
+    .url-bar input {
+      flex: 1;
+      background: transparent;
+      border: none;
+      outline: none;
+      color: var(--text);
+      font-size: 0.95rem;
+      font-family: inherit;
+    }
+    .url-bar input::placeholder { color: var(--muted); }
+    .url-bar button {
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      border-radius: 10px;
+      padding: 0.65rem 1.4rem;
+      font-size: 0.88rem;
+      font-weight: 600;
+      font-family: inherit;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: background 0.15s, transform 0.1s;
+    }
+    .url-bar button:hover { background: var(--accent-hover); }
+    .url-bar button:active { transform: scale(0.97); }
+    .url-bar button:disabled {
+      background: var(--border2);
+      cursor: not-allowed;
+      color: var(--muted);
+    }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.5rem;
+      margin-bottom: 1rem;
+      transition: border-color 0.2s;
+    }
+    .card:hover { border-color: var(--border2); }
+
+    .card-header {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 1.25rem;
+    }
+    .card-title { display: flex; align-items: center; gap: 10px; }
+    .step-badge {
+      width: 26px; height: 26px; border-radius: 8px;
+      background: rgba(99,102,241,0.15);
+      border: 1px solid rgba(99,102,241,0.3);
+      color: var(--accent-hover);
+      font-size: 0.7rem; font-weight: 700;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+    .card h2 {
+      font-size: 0.9rem; font-weight: 600;
+      color: var(--text); letter-spacing: -0.01em;
+    }
+
+    .project-pill {
+      display: none;
+      align-items: center; gap: 8px;
+      background: var(--surface2);
+      border: 1px solid var(--border2);
+      border-radius: 8px;
+      padding: 7px 12px;
+      font-size: 0.78rem; color: var(--muted);
+      margin-bottom: 1rem;
+    }
+    .project-pill.show { display: flex; }
+    .project-pill strong { color: var(--text); font-weight: 500; }
+    .project-pill .copy-btn {
+      background: none; border: none; cursor: pointer;
+      color: var(--muted); font-size: 0.75rem; padding: 0;
+      transition: color 0.15s; margin-left: auto;
+    }
+    .project-pill .copy-btn:hover { color: var(--text); }
+
+    .status-bar {
+      display: none;
+      align-items: center; gap: 8px;
+      margin-bottom: 1rem;
+      font-size: 0.8rem; font-weight: 500;
+      padding: 8px 12px;
+      border-radius: 8px;
+      border: 1px solid transparent;
+    }
+    .status-bar.show { display: flex; }
+    .status-bar.ok { color: var(--green); background: rgba(34,197,94,0.07); border-color: rgba(34,197,94,0.2); }
+    .status-bar.err { color: var(--red); background: rgba(248,113,113,0.07); border-color: rgba(248,113,113,0.2); }
+    .status-bar.loading { color: #a5b4fc; background: rgba(99,102,241,0.07); border-color: rgba(99,102,241,0.2); }
+
+    .spinner {
+      width: 14px; height: 14px;
+      border: 2px solid rgba(165,180,252,0.3);
+      border-top-color: #a5b4fc;
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+      flex-shrink: 0;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .progress-wrap {
+      display: none;
+      margin-bottom: 1rem;
+      height: 3px;
+      background: var(--border2);
+      border-radius: 100px;
+      overflow: hidden;
+    }
+    .progress-wrap.show { display: block; }
+    .progress-bar {
+      height: 100%;
+      background: linear-gradient(90deg, var(--accent), var(--accent-hover));
+      border-radius: 100px;
+      animation: progress 40s linear forwards;
+    }
+    @keyframes progress { from { width: 0%; } to { width: 92%; } }
+
+    #results { display: none; }
+
+    .score-row {
+      display: flex; align-items: center; gap: 16px;
+      margin-bottom: 1.5rem;
+    }
+    .score-circle {
+      position: relative; width: 72px; height: 72px; flex-shrink: 0;
+    }
+    .score-circle svg { transform: rotate(-90deg); }
+    .score-circle .track { fill: none; stroke: var(--border2); stroke-width: 5; }
+    .score-circle .fill {
+      fill: none; stroke-width: 5; stroke-linecap: round;
+      stroke-dasharray: 188; stroke-dashoffset: 188;
+      transition: stroke-dashoffset 1s ease;
+    }
+    .score-circle .fill.good { stroke: var(--green); }
+    .score-circle .fill.mid { stroke: var(--yellow); }
+    .score-circle .fill.bad { stroke: var(--red); }
+    .score-num {
+      position: absolute; inset: 0;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      font-size: 1.1rem; font-weight: 700; color: var(--text);
+    }
+    .score-num span { font-size: 0.55rem; color: var(--muted); font-weight: 400; }
+    .score-meta h3 { font-size: 1rem; font-weight: 600; margin-bottom: 4px; }
+    .score-meta p { font-size: 0.82rem; color: var(--muted); line-height: 1.5; }
+
+    .tags-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 1rem; margin-bottom: 1rem;
+    }
+
+    .tag-card {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 11px; padding: 1rem;
+    }
+    .tag-card-title {
+      font-size: 0.72rem; font-weight: 600; letter-spacing: 0.06em;
+      text-transform: uppercase; color: var(--muted);
+      margin-bottom: 0.65rem;
+      display: flex; align-items: center; gap: 6px;
+    }
+    .tag-card-title .dot {
+      width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0;
+    }
+    .tag-list { display: flex; flex-wrap: wrap; gap: 6px; }
+    .tag {
+      font-size: 0.75rem; padding: 3px 10px;
+      border-radius: 100px; font-weight: 500;
+    }
+    .tag.green { background: rgba(34,197,94,0.1); color: #4ade80; border: 1px solid rgba(34,197,94,0.2); }
+    .tag.red { background: rgba(248,113,113,0.1); color: #fca5a5; border: 1px solid rgba(248,113,113,0.2); }
+    .tag.yellow { background: rgba(250,204,21,0.1); color: #fde047; border: 1px solid rgba(250,204,21,0.2); }
+    .tag.blue { background: rgba(99,102,241,0.1); color: #a5b4fc; border: 1px solid rgba(99,102,241,0.2); }
+
+    .quick-wins {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 11px; padding: 1rem; margin-bottom: 1rem;
+    }
+    .quick-wins-title {
+      font-size: 0.72rem; font-weight: 600; letter-spacing: 0.06em;
+      text-transform: uppercase; color: var(--muted);
+      margin-bottom: 0.75rem;
+      display: flex; align-items: center; gap: 6px;
+    }
+    .win-item {
+      display: flex; align-items: flex-start; gap: 10px;
+      padding: 8px 0;
+      border-bottom: 1px solid var(--border);
+      font-size: 0.83rem; line-height: 1.5;
+    }
+    .win-item:last-child { border-bottom: none; padding-bottom: 0; }
+    .win-num {
+      width: 20px; height: 20px; border-radius: 6px;
+      background: rgba(99,102,241,0.15); color: var(--accent-hover);
+      font-size: 0.68rem; font-weight: 700;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0; margin-top: 1px;
+    }
+
+    .seo-grid {
+      display: grid; grid-template-columns: repeat(4, 1fr);
+      gap: 0.75rem; margin-bottom: 1rem;
+    }
+    @media (max-width: 500px) { .seo-grid { grid-template-columns: repeat(2, 1fr); } }
+
+    .seo-metric {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 11px; padding: 0.85rem 0.75rem; text-align: center;
+    }
+    .seo-metric .val {
+      font-size: 1.3rem; font-weight: 700; line-height: 1.2; margin-bottom: 4px;
+    }
+    .seo-metric .lbl { font-size: 0.68rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; }
+    .val.good { color: var(--green); }
+    .val.mid { color: var(--yellow); }
+    .val.bad { color: var(--red); }
+    .val.na { color: var(--muted); }
+
+    .btn {
+      background: var(--accent); color: #fff; border: none;
+      border-radius: 9px; padding: 0.6rem 1.2rem;
+      font-size: 0.88rem; font-weight: 600; font-family: inherit;
+      cursor: pointer; white-space: nowrap;
+      transition: background 0.15s, transform 0.1s;
+    }
+    .btn:hover { background: var(--accent-hover); }
+    .btn:active { transform: scale(0.97); }
+    .btn-ghost {
+      background: var(--surface2);
+      border: 1px solid var(--border2); color: var(--text);
+    }
+    .btn-ghost:hover { background: var(--border); }
+
+    .divider { height: 1px; background: var(--border); margin: 1.5rem 0; }
+
+    .history-item {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0.85rem 0; border-bottom: 1px solid var(--border); gap: 1rem;
+    }
+    .history-item:last-child { border-bottom: none; }
+    .history-meta { font-size: 0.8rem; color: var(--muted); margin-top: 2px; }
+    .history-score { font-size: 1rem; font-weight: 700; }
+  </style>
+</head>
+<body>
+<div class="shell">
+
+  <header class="header">
+    <div class="badge"><span class="badge-dot"></span> AI-Powered</div>
+    <h1>Market Strategy Intelligence</h1>
+    <p>Drop in any URL. Get a full AI breakdown of SEO gaps, marketing signals, and quick wins — instantly.</p>
+  </header>
+
+  <div class="url-bar">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#6b6b8a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+    <input id="urlInput" type="url" placeholder="https://yourcompetitor.com" autocomplete="off" spellcheck="false" />
+    <button id="analyzeBtn" onclick="fullAnalyze()">Analyze →</button>
+  </div>
+
+  <div id="projectPill" class="project-pill">
+    <span>Project</span>
+    <strong id="pillId"></strong>
+    <button class="copy-btn" onclick="copyProjectId()" title="Copy ID">⎘ Copy</button>
+  </div>
+
+  <div id="progressWrap" class="progress-wrap">
+    <div class="progress-bar" id="progressBar"></div>
+  </div>
+
+  <div id="mainStatus" class="status-bar"></div>
+
+  <div id="results">
+    <div class="card">
+      <div class="score-row">
+        <div class="score-circle">
+          <svg width="72" height="72" viewBox="0 0 72 72">
+            <circle class="track" cx="36" cy="36" r="30"/>
+            <circle class="fill" id="scoreFill" cx="36" cy="36" r="30"/>
+          </svg>
+          <div class="score-num" id="scoreNum">—<span>/ 100</span></div>
+        </div>
+        <div class="score-meta">
+          <h3 id="scoreSummaryTitle">Overall Score</h3>
+          <p id="scoreSummaryText"></p>
+        </div>
+      </div>
+    </div>
+
+    <div id="seoSection" style="display:none">
+      <div class="seo-grid" id="seoGrid"></div>
+    </div>
+
+    <div class="tags-grid" id="tagsGrid"></div>
+
+    <div class="quick-wins" id="quickWinsCard" style="display:none">
+      <div class="quick-wins-title"><span>⚡</span> Quick Wins</div>
+      <div id="quickWinsList"></div>
+    </div>
+
+    <div class="divider"></div>
+
+    <div style="display:flex; gap:0.75rem; justify-content:flex-end">
+      <button class="btn btn-ghost" onclick="resetUI()">← New Analysis</button>
+      <button class="btn" onclick="runAgain()">Re-analyze</button>
+    </div>
+  </div>
+
+  <div class="card" id="historyCard" style="margin-top:2.5rem; display:none">
+    <div class="card-header">
+      <div class="card-title">
+        <div class="step-badge">H</div>
+        <h2>Past Analyses</h2>
+      </div>
+    </div>
+    <div id="historyList"></div>
+  </div>
+
+</div>
+
+<script>
+  let currentProjectId = null;
+
+  async function fullAnalyze() {
+    const url = document.getElementById("urlInput").value.trim();
+    if (!url) return showStatus("Enter a URL to analyze.", "err");
+
+    const btn = document.getElementById("analyzeBtn");
+    btn.disabled = true; btn.textContent = "Working…";
+    hideResults();
+    showStatus("Creating project…", "loading", true);
+
+    try {
+      const cr = await fetch("/api/projects", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ url })
+      });
+      const cd = await cr.json();
+      if (!cr.ok) throw new Error(cd.error || cr.statusText);
+      currentProjectId = cd.project_id;
+      showProjectPill(cd.project_id);
+
+      showStatus("Scraping website & running AI analysis… (up to 60s)", "loading", true);
+      startProgress();
+
+      const rr = await fetch("/api/analysis/run", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ project_id: cd.project_id, type: "full" })
+      });
+      const rd = await rr.json();
+      if (!rr.ok) throw new Error(rd.error || rr.statusText);
+
+      stopProgress();
+      showStatus("Analysis complete", "ok");
+      renderResults(rd);
+      loadHistory(cd.project_id);
+    } catch (e) {
+      stopProgress();
+      showStatus(e.message, "err");
+    } finally {
+      btn.disabled = false; btn.textContent = "Analyze →";
+    }
+  }
+
+  async function runAgain() {
+    if (!currentProjectId) return;
+    const btn = document.getElementById("analyzeBtn");
+    btn.disabled = true; hideResults();
+    showStatus("Re-running analysis…", "loading", true);
+    startProgress();
+    try {
+      const rr = await fetch("/api/analysis/run", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ project_id: currentProjectId, type: "full" })
+      });
+      const rd = await rr.json();
+      if (!rr.ok) throw new Error(rd.error || rr.statusText);
+      stopProgress(); showStatus("Analysis complete", "ok");
+      renderResults(rd); loadHistory(currentProjectId);
+    } catch (e) { stopProgress(); showStatus(e.message, "err"); }
+    finally { btn.disabled = false; }
+  }
+
+  function resetUI() {
+    currentProjectId = null;
+    document.getElementById("urlInput").value = "";
+    hideResults();
+    document.getElementById("projectPill").classList.remove("show");
+    document.getElementById("mainStatus").classList.remove("show");
+    document.getElementById("historyCard").style.display = "none";
+  }
+
+  function renderResults(data) {
+    const ins = data.insights || {};
+    const seo = data.seoData || {};
+
+    const score = ins.overallScore ?? 0;
+    document.getElementById("scoreNum").innerHTML = `${score}<span>/ 100</span>`;
+    const fill = document.getElementById("scoreFill");
+    fill.style.strokeDashoffset = 188 - (score / 100) * 188;
+    fill.className = "fill " + (score >= 70 ? "good" : score >= 40 ? "mid" : "bad");
+    document.getElementById("scoreSummaryTitle").textContent = scoreLabel(score);
+    document.getElementById("scoreSummaryText").textContent = ins.summary || "";
+
+    if (seo.pageSpeed) {
+      document.getElementById("seoSection").style.display = "block";
+      document.getElementById("seoGrid").innerHTML = [
+        { label: "Performance", val: seo.pageSpeed.performance },
+        { label: "SEO", val: seo.pageSpeed.seo },
+        { label: "Accessibility", val: seo.pageSpeed.accessibility },
+        { label: "Best Practices", val: seo.pageSpeed.bestPractices },
+      ].map(m => `<div class="seo-metric"><div class="val ${scoreClass(m.val)}">${m.val}</div><div class="lbl">${m.label}</div></div>`).join("");
+    }
+
+    const grid = document.getElementById("tagsGrid");
+    grid.innerHTML = "";
+    [
+      { title: "Services Detected", key: "servicesOffered", color: "green", dot: "#22c55e" },
+      { title: "Missing Services",  key: "missingServices",  color: "red",   dot: "#f87171" },
+      { title: "SEO Issues",        key: "seoIssues",        color: "yellow",dot: "#facc15" },
+      { title: "Marketing Gaps",    key: "marketingGaps",    color: "blue",  dot: "#818cf8" },
+    ].forEach(s => {
+      const items = ins[s.key] || [];
+      if (!items.length) return;
+      grid.innerHTML += `<div class="tag-card"><div class="tag-card-title"><span class="dot" style="background:${s.dot}"></span>${s.title}</div><div class="tag-list">${items.map(i => `<span class="tag ${s.color}">${i}</span>`).join("")}</div></div>`;
+    });
+
+    const wins = ins.quickWins || [];
+    if (wins.length) {
+      document.getElementById("quickWinsCard").style.display = "block";
+      document.getElementById("quickWinsList").innerHTML = wins.map((w, i) =>
+        `<div class="win-item"><span class="win-num">${i+1}</span>${w}</div>`).join("");
+    }
+
+    document.getElementById("results").style.display = "block";
+    document.getElementById("results").scrollIntoView({ behavior: "smooth", block: "start" });
+  }
+
+  async function loadHistory(projectId) {
+    try {
+      const res = await fetch(`/api/analysis/${projectId}`);
+      const data = await res.json();
+      if (!Array.isArray(data) || !data.length) return;
+      const card = document.getElementById("historyCard");
+      card.style.display = "block";
+      document.getElementById("historyList").innerHTML = data.map(a => {
+        const score = a.insights?.overallScore ?? "—";
+        const date  = new Date(a.startedAt || a.started_at).toLocaleString();
+        return `<div class="history-item"><div><div style="font-size:0.85rem;font-weight:500">${a.type || "full"} analysis</div><div class="history-meta">${date}</div></div><div class="history-score ${scoreClass(score)}">${score}<span style="font-size:0.65rem;color:var(--muted);font-weight:400"> /100</span></div></div>`;
+      }).join("");
+    } catch {}
+  }
+
+  function showStatus(msg, type, spinner = false) {
+    const el = document.getElementById("mainStatus");
+    el.className = `status-bar show ${type}`;
+    el.innerHTML = (spinner && type === "loading")
+      ? `<div class="spinner"></div>${msg}`
+      : (type === "ok" ? "✓ " : type === "err" ? "✗ " : "") + msg;
+  }
+
+  function hideResults() {
+    document.getElementById("results").style.display = "none";
+    document.getElementById("quickWinsCard").style.display = "none";
+    document.getElementById("seoSection").style.display = "none";
+  }
+
+  function startProgress() {
+    const wrap = document.getElementById("progressWrap");
+    const bar  = document.getElementById("progressBar");
+    bar.style.animation = "none"; bar.offsetHeight;
+    bar.style.animation = ""; wrap.classList.add("show");
+  }
+
+  function stopProgress() {
+    const wrap = document.getElementById("progressWrap");
+    const bar  = document.getElementById("progressBar");
+    bar.style.width = "100%"; bar.style.animation = "none";
+    setTimeout(() => wrap.classList.remove("show"), 400);
+  }
+
+  function showProjectPill(id) {
+    document.getElementById("pillId").textContent = id;
+    document.getElementById("projectPill").classList.add("show");
+  }
+
+  function copyProjectId() {
+    if (currentProjectId) navigator.clipboard.writeText(currentProjectId);
+  }
+
+  function scoreClass(v) {
+    if (v === "—" || v == null) return "na";
+    return v >= 70 ? "good" : v >= 40 ? "mid" : "bad";
+  }
+
+  function scoreLabel(s) {
+    if (s >= 80) return "Strong presence";
+    if (s >= 60) return "Good foundation";
+    if (s >= 40) return "Needs improvement";
+    return "Significant gaps";
+  }
+
+  document.getElementById("urlInput").addEventListener("keydown", e => {
+    if (e.key === "Enter") fullAnalyze();
+  });
+</script>
+</body>
+</html>

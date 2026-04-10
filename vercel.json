@@ -1,0 +1,9 @@
+{
+  "devCommand": null,
+  "framework": null,
+  "functions": {
+    "api/**/*.ts": {
+      "maxDuration": 60
+    }
+  }
+}
