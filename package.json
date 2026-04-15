@@ -9,15 +9,19 @@
     "db:migrate": "dotenv -- sh -c 'psql \"$POSTGRES_URL\" -f migrations/001_init.sql'"
   },
   "dependencies": {
-    "@anthropic-ai/sdk": "^0.24.0",
+    "@anthropic-ai/sdk": "^0.39.0",
     "@types/pg": "^8.20.0",
     "axios": "^1.7.0",
     "cheerio": "^1.0.0",
+    "jsonwebtoken": "^9.0.0",
+    "node-cron": "^3.0.0",
     "pg": "^8.20.0"
   },
   "devDependencies": {
     "@types/express": "^5.0.6",
+    "@types/jsonwebtoken": "^9.0.0",
     "@types/node": "^20.0.0",
+    "@types/node-cron": "^3.0.0",
     "@vercel/node": "^3.2.0",
     "dotenv-cli": "^11.0.0",
     "express": "^5.2.1",

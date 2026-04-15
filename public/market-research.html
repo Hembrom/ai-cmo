@@ -1,0 +1,940 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Market Research — AI CMO</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #080810;
+      --surface: #0e0e1a;
+      --surface2: #13131f;
+      --border: #1e1e30;
+      --border2: #252538;
+      --text: #e2e2f0;
+      --muted: #6b6b8a;
+      --accent: #6366f1;
+      --accent-glow: rgba(99,102,241,0.35);
+      --accent-hover: #818cf8;
+      --green: #22c55e;
+      --red: #f87171;
+      --yellow: #facc15;
+      --cyan: #22d3ee;
+      --purple: #a78bfa;
+      --radius: 14px;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Inter', system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      top: -200px; left: -200px;
+      width: 600px; height: 600px;
+      background: radial-gradient(circle, rgba(99,102,241,0.12) 0%, transparent 70%);
+      pointer-events: none; z-index: 0;
+    }
+    body::after {
+      content: '';
+      position: fixed;
+      bottom: -200px; right: -100px;
+      width: 500px; height: 500px;
+      background: radial-gradient(circle, rgba(139,92,246,0.08) 0%, transparent 70%);
+      pointer-events: none; z-index: 0;
+    }
+
+    .shell {
+      position: relative; z-index: 1;
+      max-width: 700px;
+      margin: 0 auto;
+      padding: 3rem 1.5rem 6rem;
+    }
+
+    /* ── Top nav ── */
+    .top-nav {
+      display: flex; align-items: center; gap: 12px;
+      margin-bottom: 2.5rem;
+    }
+    .back-link {
+      display: inline-flex; align-items: center; gap: 6px;
+      color: var(--muted); text-decoration: none;
+      font-size: 0.82rem; font-weight: 500;
+      transition: color 0.15s;
+    }
+    .back-link:hover { color: var(--text); }
+
+    /* ── Header ── */
+    .header { text-align: center; margin-bottom: 2.5rem; }
+
+    .badge {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: rgba(99,102,241,0.12);
+      border: 1px solid rgba(99,102,241,0.3);
+      color: var(--accent-hover);
+      font-size: 0.72rem; font-weight: 600; letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 4px 12px; border-radius: 100px;
+      margin-bottom: 1.25rem;
+    }
+    .badge-dot {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: var(--accent-hover);
+      animation: pulse 2s infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.5; transform: scale(0.8); }
+    }
+
+    .header h1 {
+      font-size: clamp(1.6rem, 4vw, 2.2rem);
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      line-height: 1.15;
+      background: linear-gradient(135deg, #fff 0%, #a5b4fc 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 0.6rem;
+    }
+    .header p {
+      color: var(--muted);
+      font-size: 0.95rem;
+      line-height: 1.6;
+      max-width: 440px;
+      margin: 0 auto;
+    }
+
+    /* ── Progress tracker ── */
+    .progress-steps {
+      display: flex; align-items: center; gap: 0;
+      margin-bottom: 2.5rem;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: calc(var(--radius) + 4px);
+      padding: 1rem 1.25rem;
+    }
+    .step-item {
+      display: flex; align-items: center; gap: 8px;
+      flex: 1;
+    }
+    .step-dot {
+      width: 28px; height: 28px; border-radius: 50%;
+      border: 2px solid var(--border2);
+      background: var(--surface2);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.7rem; font-weight: 700; color: var(--muted);
+      flex-shrink: 0;
+      transition: all 0.3s ease;
+    }
+    .step-dot.active {
+      border-color: var(--accent);
+      background: rgba(99,102,241,0.15);
+      color: var(--accent-hover);
+    }
+    .step-dot.done {
+      border-color: var(--green);
+      background: rgba(34,197,94,0.15);
+      color: var(--green);
+    }
+    .step-connector {
+      flex: 1; height: 1px; background: var(--border2); margin: 0 6px;
+      transition: background 0.3s;
+    }
+    .step-connector.done { background: var(--green); opacity: 0.4; }
+
+    /* ── Question card ── */
+    .question-card {
+      background: var(--surface);
+      border: 1px solid var(--border2);
+      border-radius: var(--radius);
+      padding: 2rem;
+      display: none;
+    }
+    .question-card.active { display: block; }
+
+    .q-step-label {
+      font-size: 0.7rem; font-weight: 600; letter-spacing: 0.08em;
+      text-transform: uppercase; color: var(--muted);
+      margin-bottom: 0.5rem;
+    }
+    .q-title {
+      font-size: 1.15rem; font-weight: 600;
+      letter-spacing: -0.02em; margin-bottom: 0.4rem;
+    }
+    .q-sub {
+      font-size: 0.82rem; color: var(--muted); margin-bottom: 1.5rem;
+      line-height: 1.5;
+    }
+
+    /* text inputs */
+    .q-input {
+      width: 100%;
+      background: var(--surface2);
+      border: 1px solid var(--border2);
+      border-radius: 10px;
+      padding: 0.75rem 1rem;
+      color: var(--text);
+      font-size: 0.95rem;
+      font-family: inherit;
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+      resize: none;
+    }
+    .q-input::placeholder { color: var(--muted); }
+    .q-input:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px var(--accent-glow);
+    }
+
+    /* option buttons */
+    .options-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 0.65rem;
+      margin-bottom: 0.5rem;
+    }
+    .opt-btn {
+      background: var(--surface2);
+      border: 1px solid var(--border2);
+      border-radius: 10px;
+      padding: 0.7rem 1rem;
+      color: var(--text);
+      font-size: 0.85rem;
+      font-weight: 500;
+      font-family: inherit;
+      cursor: pointer;
+      text-align: left;
+      transition: all 0.15s;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .opt-btn:hover {
+      border-color: rgba(99,102,241,0.5);
+      background: rgba(99,102,241,0.07);
+    }
+    .opt-btn.selected {
+      border-color: var(--accent);
+      background: rgba(99,102,241,0.12);
+      color: var(--accent-hover);
+    }
+    .opt-icon { font-size: 1rem; flex-shrink: 0; }
+
+    /* nav buttons */
+    .q-footer {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-top: 1.75rem;
+      gap: 1rem;
+    }
+    .btn {
+      background: var(--accent); color: #fff; border: none;
+      border-radius: 9px; padding: 0.65rem 1.4rem;
+      font-size: 0.88rem; font-weight: 600; font-family: inherit;
+      cursor: pointer; white-space: nowrap;
+      transition: background 0.15s, transform 0.1s;
+      display: inline-flex; align-items: center; gap: 6px;
+    }
+    .btn:hover { background: var(--accent-hover); }
+    .btn:active { transform: scale(0.97); }
+    .btn:disabled {
+      background: var(--border2); color: var(--muted); cursor: not-allowed;
+    }
+    .btn-ghost {
+      background: var(--surface2);
+      border: 1px solid var(--border2); color: var(--text);
+    }
+    .btn-ghost:hover { background: var(--border); border-color: var(--border2); }
+
+    /* ── Loading state ── */
+    #loadingCard {
+      display: none;
+      background: var(--surface);
+      border: 1px solid var(--border2);
+      border-radius: var(--radius);
+      padding: 3rem 2rem;
+      text-align: center;
+    }
+    .loading-spinner {
+      width: 48px; height: 48px; margin: 0 auto 1.5rem;
+      border: 3px solid rgba(99,102,241,0.2);
+      border-top-color: var(--accent);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .loading-title {
+      font-size: 1rem; font-weight: 600; margin-bottom: 0.4rem;
+    }
+    .loading-sub { font-size: 0.83rem; color: var(--muted); }
+
+    .loading-steps { margin-top: 1.5rem; text-align: left; max-width: 280px; margin-inline: auto; }
+    .loading-step {
+      display: flex; align-items: center; gap: 10px;
+      padding: 6px 0;
+      font-size: 0.8rem; color: var(--muted);
+      transition: color 0.3s;
+    }
+    .loading-step.done { color: var(--green); }
+    .loading-step.active { color: var(--accent-hover); }
+    .loading-step-dot {
+      width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0;
+      background: var(--border2); transition: background 0.3s;
+    }
+    .loading-step.done .loading-step-dot { background: var(--green); }
+    .loading-step.active .loading-step-dot { background: var(--accent); }
+
+    /* ── Error banner ── */
+    #errorBanner {
+      display: none;
+      background: rgba(248,113,113,0.07);
+      border: 1px solid rgba(248,113,113,0.2);
+      border-radius: 10px;
+      padding: 0.8rem 1rem;
+      color: var(--red);
+      font-size: 0.83rem;
+      margin-bottom: 1rem;
+    }
+
+    /* ── Results ── */
+    #resultsSection { display: none; }
+
+    .results-header {
+      display: flex; align-items: flex-start; justify-content: space-between;
+      gap: 1rem; margin-bottom: 1.75rem;
+    }
+    .results-header-text h2 {
+      font-size: 1.25rem; font-weight: 700;
+      letter-spacing: -0.02em; margin-bottom: 0.35rem;
+    }
+    .results-header-text p {
+      font-size: 0.85rem; color: var(--muted); line-height: 1.5;
+    }
+
+    .section-label {
+      font-size: 0.7rem; font-weight: 600; letter-spacing: 0.08em;
+      text-transform: uppercase; color: var(--muted);
+      margin-bottom: 0.75rem;
+      display: flex; align-items: center; gap: 6px;
+    }
+    .section-label::before {
+      content: ''; display: block;
+      width: 14px; height: 2px; border-radius: 1px;
+      background: var(--accent);
+    }
+
+    /* Market size cards */
+    .market-size-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 0.75rem;
+      margin-bottom: 1.5rem;
+    }
+    @media (max-width: 580px) {
+      .market-size-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+    .ms-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1rem 0.9rem;
+      text-align: center;
+    }
+    .ms-icon { font-size: 1.2rem; margin-bottom: 0.35rem; }
+    .ms-value {
+      font-size: 1.4rem; font-weight: 700; line-height: 1.1;
+      letter-spacing: -0.03em; margin-bottom: 0.2rem;
+      color: var(--accent-hover);
+    }
+    .ms-value.projected { color: var(--cyan); }
+    .ms-label { font-size: 0.68rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; }
+    .ms-year { font-size: 0.72rem; color: var(--border2); margin-top: 2px; }
+
+    /* CAGR block */
+    .cagr-block {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 1.5rem;
+      align-items: start;
+    }
+    @media (max-width: 500px) { .cagr-block { grid-template-columns: 1fr; } }
+
+    .cagr-numbers { display: flex; gap: 1.5rem; }
+    .cagr-num-item { text-align: center; }
+    .cagr-big {
+      font-size: 2rem; font-weight: 700; letter-spacing: -0.04em;
+      line-height: 1; margin-bottom: 2px;
+    }
+    .cagr-big.proj { color: var(--green); }
+    .cagr-big.hist { color: var(--yellow); }
+    .cagr-num-label {
+      font-size: 0.65rem; color: var(--muted);
+      text-transform: uppercase; letter-spacing: 0.05em;
+    }
+    .cagr-period {
+      font-size: 0.75rem; color: var(--muted); margin-top: 0.75rem;
+    }
+
+    .cagr-drivers-label {
+      font-size: 0.72rem; font-weight: 600; color: var(--muted);
+      text-transform: uppercase; letter-spacing: 0.06em;
+      margin-bottom: 0.6rem;
+    }
+    .driver-list { display: flex; flex-direction: column; gap: 6px; }
+    .driver-item {
+      display: flex; align-items: center; gap: 8px;
+      font-size: 0.82rem;
+    }
+    .driver-arrow {
+      color: var(--green); font-size: 0.7rem; flex-shrink: 0;
+    }
+
+    /* Top players */
+    .players-list { display: flex; flex-direction: column; gap: 0.65rem; margin-bottom: 1.5rem; }
+    .player-row {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 11px;
+      padding: 1rem 1.1rem;
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 0.75rem;
+      align-items: start;
+    }
+    .player-name { font-size: 0.92rem; font-weight: 600; margin-bottom: 2px; }
+    .player-note { font-size: 0.78rem; color: var(--muted); line-height: 1.4; }
+    .player-right { text-align: right; display: flex; flex-direction: column; align-items: flex-end; gap: 6px; }
+    .player-share { font-size: 0.85rem; font-weight: 600; color: var(--text); }
+    .player-revenue { font-size: 0.75rem; color: var(--muted); }
+    .trend-badge {
+      display: inline-flex; align-items: center; gap: 4px;
+      font-size: 0.68rem; font-weight: 600; letter-spacing: 0.04em;
+      padding: 2px 8px; border-radius: 100px;
+    }
+    .trend-badge.growing {
+      background: rgba(34,197,94,0.1); color: #4ade80;
+      border: 1px solid rgba(34,197,94,0.2);
+    }
+    .trend-badge.stable {
+      background: rgba(250,204,21,0.1); color: #fde047;
+      border: 1px solid rgba(250,204,21,0.2);
+    }
+    .trend-badge.declining {
+      background: rgba(248,113,113,0.1); color: #fca5a5;
+      border: 1px solid rgba(248,113,113,0.2);
+    }
+
+    /* Trends & opportunities */
+    .two-col {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.5rem;
+    }
+    @media (max-width: 520px) { .two-col { grid-template-columns: 1fr; } }
+
+    .list-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 11px; padding: 1rem 1.1rem;
+    }
+    .list-card-title {
+      font-size: 0.72rem; font-weight: 600; letter-spacing: 0.06em;
+      text-transform: uppercase; margin-bottom: 0.75rem;
+      display: flex; align-items: center; gap: 6px;
+    }
+    .list-card-title .dot {
+      width: 6px; height: 6px; border-radius: 50%;
+    }
+    .list-items { display: flex; flex-direction: column; gap: 0; }
+    .list-item {
+      display: flex; align-items: flex-start; gap: 8px;
+      padding: 7px 0;
+      border-bottom: 1px solid var(--border);
+      font-size: 0.82rem; line-height: 1.4;
+    }
+    .list-item:last-child { border-bottom: none; padding-bottom: 0; }
+    .list-item-num {
+      width: 18px; height: 18px; border-radius: 5px;
+      font-size: 0.65rem; font-weight: 700;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0; margin-top: 1px;
+    }
+    .item-trend { background: rgba(99,102,241,0.15); color: var(--accent-hover); }
+    .item-opp { background: rgba(34,197,94,0.12); color: #4ade80; }
+
+    .divider { height: 1px; background: var(--border); margin: 1.5rem 0; }
+
+    .results-footer {
+      display: flex; gap: 0.75rem; justify-content: flex-end;
+    }
+
+    .disclaimer {
+      margin-top: 1.5rem;
+      font-size: 0.72rem; color: var(--muted);
+      text-align: center; line-height: 1.5;
+    }
+  </style>
+</head>
+<body>
+<div class="shell">
+
+  <nav class="top-nav">
+    <a class="back-link" href="/">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
+      Back to Analyzer
+    </a>
+  </nav>
+
+  <header class="header">
+    <div class="badge"><span class="badge-dot"></span> AI Research</div>
+    <h1>Market Size & CAGR Research</h1>
+    <p>Answer 5 quick questions and get an AI-powered breakdown of your market size, growth rate, and top competitor performance.</p>
+  </header>
+
+  <!-- Step progress -->
+  <div class="progress-steps" id="progressSteps">
+    <div class="step-item">
+      <div class="step-dot active" id="dot1">1</div>
+    </div>
+    <div class="step-connector" id="conn1"></div>
+    <div class="step-item">
+      <div class="step-dot" id="dot2">2</div>
+    </div>
+    <div class="step-connector" id="conn2"></div>
+    <div class="step-item">
+      <div class="step-dot" id="dot3">3</div>
+    </div>
+    <div class="step-connector" id="conn3"></div>
+    <div class="step-item">
+      <div class="step-dot" id="dot4">4</div>
+    </div>
+    <div class="step-connector" id="conn4"></div>
+    <div class="step-item">
+      <div class="step-dot" id="dot5">5</div>
+    </div>
+  </div>
+
+  <div id="errorBanner"></div>
+
+  <!-- Q1: Industry -->
+  <div class="question-card active" id="q1">
+    <div class="q-step-label">Question 1 of 5</div>
+    <div class="q-title">What industry or market are you operating in?</div>
+    <div class="q-sub">Be as specific as possible. The more detail you give, the more accurate the research.</div>
+    <textarea class="q-input" id="q1Input" rows="3"
+      placeholder="e.g. AI-powered HR software for mid-market companies in the US"></textarea>
+    <div class="q-footer">
+      <span></span>
+      <button class="btn" onclick="goNext(1)">Continue <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></button>
+    </div>
+  </div>
+
+  <!-- Q2: Target customer -->
+  <div class="question-card" id="q2">
+    <div class="q-step-label">Question 2 of 5</div>
+    <div class="q-title">Who are your primary target customers?</div>
+    <div class="q-sub">Select the option that best describes your ideal customer profile.</div>
+    <div class="options-grid">
+      <button class="opt-btn" data-q="q2" onclick="selectOpt(this, 'q2')"><span class="opt-icon">🏢</span> B2B — SMBs<br><small style="color:var(--muted);font-size:0.72rem">Small & mid-size businesses</small></button>
+      <button class="opt-btn" data-q="q2" onclick="selectOpt(this, 'q2')"><span class="opt-icon">🏛️</span> B2B — Enterprise<br><small style="color:var(--muted);font-size:0.72rem">Large organisations (500+ employees)</small></button>
+      <button class="opt-btn" data-q="q2" onclick="selectOpt(this, 'q2')"><span class="opt-icon">🧑</span> B2C — Consumers<br><small style="color:var(--muted);font-size:0.72rem">Individual end users</small></button>
+      <button class="opt-btn" data-q="q2" onclick="selectOpt(this, 'q2')"><span class="opt-icon">🏛</span> B2G — Government<br><small style="color:var(--muted);font-size:0.72rem">Public sector & institutions</small></button>
+    </div>
+    <div class="q-footer">
+      <button class="btn btn-ghost" onclick="goBack(2)">← Back</button>
+      <button class="btn" onclick="goNext(2)" id="nextBtn2" disabled>Continue →</button>
+    </div>
+  </div>
+
+  <!-- Q3: Geography -->
+  <div class="question-card" id="q3">
+    <div class="q-step-label">Question 3 of 5</div>
+    <div class="q-title">What is your primary target geography?</div>
+    <div class="q-sub">Where are most of your customers or where do you plan to launch first?</div>
+    <div class="options-grid">
+      <button class="opt-btn" data-q="q3" onclick="selectOpt(this, 'q3')"><span class="opt-icon">🌍</span> Global</button>
+      <button class="opt-btn" data-q="q3" onclick="selectOpt(this, 'q3')"><span class="opt-icon">🇺🇸</span> North America</button>
+      <button class="opt-btn" data-q="q3" onclick="selectOpt(this, 'q3')"><span class="opt-icon">🇪🇺</span> Europe</button>
+      <button class="opt-btn" data-q="q3" onclick="selectOpt(this, 'q3')"><span class="opt-icon">🌏</span> Asia-Pacific</button>
+      <button class="opt-btn" data-q="q3" onclick="selectOpt(this, 'q3')"><span class="opt-icon">🌎</span> Latin America</button>
+      <button class="opt-btn" data-q="q3" onclick="selectOpt(this, 'q3')"><span class="opt-icon">🌍</span> Middle East & Africa</button>
+    </div>
+    <div class="q-footer">
+      <button class="btn btn-ghost" onclick="goBack(3)">← Back</button>
+      <button class="btn" onclick="goNext(3)" id="nextBtn3" disabled>Continue →</button>
+    </div>
+  </div>
+
+  <!-- Q4: Business model -->
+  <div class="question-card" id="q4">
+    <div class="q-step-label">Question 4 of 5</div>
+    <div class="q-title">What is your primary business model?</div>
+    <div class="q-sub">How will you monetise? This helps shape which market segments are most relevant.</div>
+    <div class="options-grid">
+      <button class="opt-btn" data-q="q4" onclick="selectOpt(this, 'q4')"><span class="opt-icon">☁️</span> SaaS / Subscription</button>
+      <button class="opt-btn" data-q="q4" onclick="selectOpt(this, 'q4')"><span class="opt-icon">🛒</span> Marketplace</button>
+      <button class="opt-btn" data-q="q4" onclick="selectOpt(this, 'q4')"><span class="opt-icon">📦</span> E-commerce / DTC</button>
+      <button class="opt-btn" data-q="q4" onclick="selectOpt(this, 'q4')"><span class="opt-icon">🔧</span> Professional Services</button>
+      <button class="opt-btn" data-q="q4" onclick="selectOpt(this, 'q4')"><span class="opt-icon">⚙️</span> Hardware + Software</button>
+      <button class="opt-btn" data-q="q4" onclick="selectOpt(this, 'q4')"><span class="opt-icon">💡</span> Other</button>
+    </div>
+    <div class="q-footer">
+      <button class="btn btn-ghost" onclick="goBack(4)">← Back</button>
+      <button class="btn" onclick="goNext(4)" id="nextBtn4" disabled>Continue →</button>
+    </div>
+  </div>
+
+  <!-- Q5: Monthly Budget -->
+  <div class="question-card" id="q5">
+    <div class="q-step-label">Question 5 of 5</div>
+    <div class="q-title">What is your monthly marketing / growth budget?</div>
+    <div class="q-sub">This helps calibrate market entry strategies and benchmarks against similar-sized players.</div>
+    <div class="options-grid">
+      <button class="opt-btn" data-q="q5" onclick="selectOpt(this, 'q5')"><span class="opt-icon">🌱</span> Under $1K</button>
+      <button class="opt-btn" data-q="q5" onclick="selectOpt(this, 'q5')"><span class="opt-icon">🚀</span> $1K – $10K</button>
+      <button class="opt-btn" data-q="q5" onclick="selectOpt(this, 'q5')"><span class="opt-icon">📊</span> $10K – $50K</button>
+      <button class="opt-btn" data-q="q5" onclick="selectOpt(this, 'q5')"><span class="opt-icon">💼</span> $50K – $200K</button>
+      <button class="opt-btn" data-q="q5" onclick="selectOpt(this, 'q5')"><span class="opt-icon">🏢</span> $200K – $1M</button>
+      <button class="opt-btn" data-q="q5" onclick="selectOpt(this, 'q5')"><span class="opt-icon">🏦</span> $1M+</button>
+    </div>
+    <div class="q-footer">
+      <button class="btn btn-ghost" onclick="goBack(5)">← Back</button>
+      <button class="btn" onclick="submitResearch()" id="submitBtn" disabled>
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/></svg>
+        Run Research
+      </button>
+    </div>
+  </div>
+
+  <!-- Loading state -->
+  <div id="loadingCard">
+    <div class="loading-spinner"></div>
+    <div class="loading-title">Researching your market…</div>
+    <div class="loading-sub">This usually takes 10–20 seconds</div>
+    <div class="loading-steps">
+      <div class="loading-step active" id="ls1"><span class="loading-step-dot"></span> Analysing market context</div>
+      <div class="loading-step" id="ls2"><span class="loading-step-dot"></span> Sizing TAM / SAM / SOM</div>
+      <div class="loading-step" id="ls3"><span class="loading-step-dot"></span> Calculating CAGR projections</div>
+      <div class="loading-step" id="ls4"><span class="loading-step-dot"></span> Benchmarking top players</div>
+    </div>
+  </div>
+
+  <!-- Results section -->
+  <div id="resultsSection">
+
+    <div class="results-header">
+      <div class="results-header-text">
+        <h2 id="resTitle">Market Research Report</h2>
+        <p id="resOverview"></p>
+      </div>
+    </div>
+
+    <!-- Market size -->
+    <div class="section-label">Market Size</div>
+    <div class="market-size-grid" id="marketSizeGrid"></div>
+
+    <!-- CAGR -->
+    <div class="section-label">Growth Rate (CAGR)</div>
+    <div class="cagr-block" id="cagrBlock"></div>
+
+    <!-- Top players -->
+    <div class="section-label">Top Player Performance</div>
+    <div class="players-list" id="playersList"></div>
+
+    <!-- Trends & Opportunities -->
+    <div class="two-col" id="trendsOppGrid"></div>
+
+    <div class="divider"></div>
+    <div class="results-footer">
+      <button class="btn btn-ghost" onclick="resetAll()">← Start Over</button>
+      <button class="btn" onclick="window.print()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+        Export
+      </button>
+    </div>
+
+    <p class="disclaimer">AI-generated estimates based on publicly available market data. Figures are approximations for planning purposes — always validate with primary research before major investment decisions.</p>
+  </div>
+
+</div>
+
+<script>
+  // ── State ──────────────────────────────────────────────
+  const answers = { q1: '', q2: '', q3: '', q4: '', q5: '' };
+  let currentStep = 1;
+
+  // ── Navigation ─────────────────────────────────────────
+  function goNext(step) {
+    if (step === 1) {
+      const val = document.getElementById('q1Input').value.trim();
+      if (!val) { shakeInput('q1Input'); return; }
+      answers.q1 = val;
+    }
+    if (step === 2 && !answers.q2) return;
+    if (step === 3 && !answers.q3) return;
+    if (step === 4 && !answers.q4) return;
+
+    markStepDone(step);
+    showQuestion(step + 1);
+    currentStep = step + 1;
+  }
+
+  function goBack(step) {
+    showQuestion(step - 1);
+    currentStep = step - 1;
+    unmarkStepDone(step - 1);
+  }
+
+  function showQuestion(n) {
+    document.querySelectorAll('.question-card').forEach(c => c.classList.remove('active'));
+    const card = document.getElementById('q' + n);
+    if (card) card.classList.add('active');
+    updateDots(n);
+  }
+
+  function updateDots(activeStep) {
+    for (let i = 1; i <= 5; i++) {
+      const dot = document.getElementById('dot' + i);
+      if (i < activeStep) {
+        dot.className = 'step-dot done';
+        dot.textContent = '✓';
+      } else if (i === activeStep) {
+        dot.className = 'step-dot active';
+        dot.textContent = i;
+      } else {
+        dot.className = 'step-dot';
+        dot.textContent = i;
+      }
+      if (i < 5) {
+        const conn = document.getElementById('conn' + i);
+        conn.className = 'step-connector' + (i < activeStep ? ' done' : '');
+      }
+    }
+  }
+
+  function markStepDone(step) {
+    const dot = document.getElementById('dot' + step);
+    dot.className = 'step-dot done';
+    dot.textContent = '✓';
+    if (step < 5) {
+      document.getElementById('conn' + step).classList.add('done');
+    }
+  }
+
+  function unmarkStepDone(step) {
+    const dot = document.getElementById('dot' + step);
+    dot.className = 'step-dot active';
+    dot.textContent = step;
+    if (step < 5) {
+      document.getElementById('conn' + step).classList.remove('done');
+    }
+  }
+
+  // ── Option buttons ──────────────────────────────────────
+  function selectOpt(btn, q) {
+    document.querySelectorAll(`.opt-btn[data-q="${q}"]`).forEach(b => b.classList.remove('selected'));
+    btn.classList.add('selected');
+    answers[q] = btn.textContent.trim().replace(/\s+/g, ' ');
+    const nextBtn = document.getElementById('nextBtn' + q.slice(1)) || document.getElementById('submitBtn');
+    if (nextBtn) nextBtn.disabled = false;
+  }
+
+  // ── Shake invalid input ────────────────────────────────
+  function shakeInput(id) {
+    const el = document.getElementById(id);
+    el.style.borderColor = 'var(--red)';
+    el.style.boxShadow = '0 0 0 3px rgba(248,113,113,0.2)';
+    setTimeout(() => {
+      el.style.borderColor = '';
+      el.style.boxShadow = '';
+    }, 1200);
+    el.focus();
+  }
+
+  // ── Submit ──────────────────────────────────────────────
+  async function submitResearch() {
+    if (!answers.q5) return;
+
+    document.getElementById('progressSteps').style.display = 'none';
+    document.querySelectorAll('.question-card').forEach(c => c.style.display = 'none');
+    document.getElementById('errorBanner').style.display = 'none';
+    document.getElementById('loadingCard').style.display = 'block';
+
+    animateLoadingSteps();
+
+    try {
+      const res = await fetch('/api/market-research', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          industry:       answers.q1,
+          targetCustomer: answers.q2,
+          geography:      answers.q3,
+          businessModel:  answers.q4,
+          monthlyBudget:  answers.q5,
+        })
+      });
+
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || res.statusText);
+
+      document.getElementById('loadingCard').style.display = 'none';
+      renderResults(data);
+    } catch (e) {
+      document.getElementById('loadingCard').style.display = 'none';
+      // show error and restore questionnaire at last step
+      const banner = document.getElementById('errorBanner');
+      banner.style.display = 'block';
+      banner.textContent = '✗ ' + e.message;
+      document.getElementById('progressSteps').style.display = 'flex';
+      document.getElementById('q5').style.display = 'block';
+      document.getElementById('q5').classList.add('active');
+    }
+  }
+
+  let loadingTimer = null;
+  function animateLoadingSteps() {
+    const steps = ['ls1','ls2','ls3','ls4'];
+    let idx = 0;
+    document.getElementById(steps[0]).classList.add('active');
+    loadingTimer = setInterval(() => {
+      if (idx < steps.length) {
+        if (idx > 0) {
+          document.getElementById(steps[idx - 1]).classList.remove('active');
+          document.getElementById(steps[idx - 1]).classList.add('done');
+        }
+        document.getElementById(steps[idx]).classList.add('active');
+        idx++;
+      } else {
+        clearInterval(loadingTimer);
+      }
+    }, 4000);
+  }
+
+  // ── Render results ─────────────────────────────────────
+  function renderResults(data) {
+    document.getElementById('resTitle').textContent = answers.q1 + ' — Market Report';
+    document.getElementById('resOverview').textContent = data.marketOverview || '';
+
+    // Market size
+    const ms = data.marketSize || {};
+    const msCards = [
+      { key: 'tam', icon: '🌐', label: ms.tam?.label || 'TAM', cls: '' },
+      { key: 'sam', icon: '🎯', label: ms.sam?.label || 'SAM', cls: '' },
+      { key: 'som', icon: '📍', label: ms.som?.label || 'SOM', cls: '' },
+      { key: 'projected', icon: '📈', label: 'Projected Size', cls: ' projected' },
+    ];
+    document.getElementById('marketSizeGrid').innerHTML = msCards.map(c => {
+      const d = ms[c.key] || {};
+      return `<div class="ms-card">
+        <div class="ms-icon">${c.icon}</div>
+        <div class="ms-value${c.cls}">$${d.value || '—'}${d.unit || ''}</div>
+        <div class="ms-label">${c.label}</div>
+        <div class="ms-year">${d.year || ''}</div>
+      </div>`;
+    }).join('');
+
+    // CAGR
+    const cagr = data.cagr || {};
+    document.getElementById('cagrBlock').innerHTML = `
+      <div>
+        <div class="cagr-numbers">
+          <div class="cagr-num-item">
+            <div class="cagr-big proj">${cagr.projected || '—'}%</div>
+            <div class="cagr-num-label">Projected CAGR</div>
+          </div>
+          <div class="cagr-num-item">
+            <div class="cagr-big hist">${cagr.historical || '—'}%</div>
+            <div class="cagr-num-label">Historical CAGR</div>
+          </div>
+        </div>
+        <div class="cagr-period">${cagr.period || ''}</div>
+      </div>
+      <div>
+        <div class="cagr-drivers-label">Growth Drivers</div>
+        <div class="driver-list">
+          ${(cagr.drivers || []).map(d => `<div class="driver-item"><span class="driver-arrow">▲</span>${d}</div>`).join('')}
+        </div>
+      </div>
+    `;
+
+    // Top players
+    document.getElementById('playersList').innerHTML = (data.topPlayers || []).map(p => {
+      const trend = (p.trend || 'stable').toLowerCase();
+      const trendLabel = trend === 'growing' ? '↑ Growing' : trend === 'declining' ? '↓ Declining' : '→ Stable';
+      return `<div class="player-row">
+        <div>
+          <div class="player-name">${p.name}</div>
+          <div class="player-note">${p.note || ''}</div>
+        </div>
+        <div class="player-right">
+          <div class="player-share">${p.marketShare || '—'} share</div>
+          <div class="player-revenue">${p.annualRevenue || ''}</div>
+          <span class="trend-badge ${trend}">${trendLabel}</span>
+        </div>
+      </div>`;
+    }).join('');
+
+    // Trends & opportunities
+    const trends = data.marketTrends || [];
+    const opps   = data.opportunities || [];
+    document.getElementById('trendsOppGrid').innerHTML = `
+      <div class="list-card">
+        <div class="list-card-title"><span class="dot" style="background:#818cf8"></span> Market Trends</div>
+        <div class="list-items">${trends.map((t, i) => `<div class="list-item"><span class="list-item-num item-trend">${i+1}</span>${t}</div>`).join('')}</div>
+      </div>
+      <div class="list-card">
+        <div class="list-card-title"><span class="dot" style="background:#22c55e"></span> Opportunities</div>
+        <div class="list-items">${opps.map((o, i) => `<div class="list-item"><span class="list-item-num item-opp">${i+1}</span>${o}</div>`).join('')}</div>
+      </div>
+    `;
+
+    document.getElementById('resultsSection').style.display = 'block';
+    document.getElementById('resultsSection').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  // ── Reset ───────────────────────────────────────────────
+  function resetAll() {
+    answers.q1 = answers.q2 = answers.q3 = answers.q4 = answers.q5 = '';
+    document.getElementById('q1Input').value = '';
+    document.querySelectorAll('.opt-btn').forEach(b => b.classList.remove('selected'));
+    ['nextBtn2','nextBtn3','nextBtn4','submitBtn'].forEach(id => document.getElementById(id).disabled = true);
+
+    document.getElementById('resultsSection').style.display = 'none';
+    document.getElementById('errorBanner').style.display = 'none';
+    document.getElementById('progressSteps').style.display = 'flex';
+    document.querySelectorAll('.question-card').forEach(c => {
+      c.style.display = '';
+      c.classList.remove('active');
+    });
+    document.getElementById('q1').classList.add('active');
+    updateDots(1);
+    currentStep = 1;
+    clearInterval(loadingTimer);
+    ['ls1','ls2','ls3','ls4'].forEach(id => {
+      document.getElementById(id).className = 'loading-step';
+    });
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  // ── Enter key for text inputs ──────────────────────────
+  document.getElementById('q1Input').addEventListener('keydown', e => {
+    if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); goNext(1); }
+  });
+
+</script>
+</body>
+</html>
