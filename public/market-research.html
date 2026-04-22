@@ -75,6 +75,57 @@
     }
     .back-link:hover { color: var(--text); }
 
+    /* ── Page Tabs ── */
+    .page-tabs {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 0.75rem; margin-bottom: 2.5rem;
+    }
+    .page-tab {
+      display: flex; align-items: center; gap: 0.9rem;
+      padding: 1rem 1.25rem;
+      background: var(--surface); border: 1px solid var(--border);
+      border-top: 3px solid transparent;
+      border-radius: var(--radius);
+      cursor: pointer; text-align: left;
+      text-decoration: none;
+      transition: border-color 0.2s, background 0.2s, box-shadow 0.2s;
+      position: relative; overflow: hidden;
+    }
+    .page-tab::before {
+      content: ''; position: absolute; inset: 0;
+      background: linear-gradient(135deg, rgba(99,102,241,0.07) 0%, transparent 60%);
+      opacity: 0; transition: opacity 0.2s;
+    }
+    .page-tab:hover { border-color: var(--border2); }
+    .page-tab:hover::before { opacity: 1; }
+    .page-tab.active {
+      border-top-color: var(--accent);
+      background: rgba(99,102,241,0.07);
+      box-shadow: 0 0 0 1px rgba(99,102,241,0.18);
+    }
+    .page-tab.active::before { opacity: 1; }
+    .ptab-icon {
+      width: 38px; height: 38px; border-radius: 10px; flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+      background: var(--border2); color: var(--muted);
+      transition: background 0.2s, color 0.2s;
+    }
+    .page-tab.active .ptab-icon {
+      background: rgba(99,102,241,0.2); color: var(--accent);
+    }
+    .ptab-body { flex: 1; min-width: 0; }
+    .ptab-title {
+      font-size: 0.88rem; font-weight: 700; color: var(--muted);
+      margin-bottom: 0.2rem; transition: color 0.2s;
+    }
+    .page-tab.active .ptab-title { color: var(--text); }
+    .ptab-sub { font-size: 0.72rem; color: var(--muted); line-height: 1.3; }
+    .ptab-arrow {
+      color: var(--muted); flex-shrink: 0;
+      transition: transform 0.2s, color 0.2s;
+    }
+    .page-tab:hover .ptab-arrow { transform: translateX(3px); color: var(--accent); }
+
     /* ── Header ── */
     .header { text-align: center; margin-bottom: 2.5rem; }
 
@@ -486,22 +537,199 @@
       font-size: 0.72rem; color: var(--muted);
       text-align: center; line-height: 1.5;
     }
+
+    /* ── Result Tabs ── */
+    .result-tabs {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 0.75rem; margin-bottom: 1.75rem;
+    }
+    .result-tab {
+      display: flex; align-items: center; gap: 0.9rem;
+      padding: 1rem 1.25rem;
+      background: var(--surface); border: 1px solid var(--border);
+      border-left: 3px solid transparent;
+      border-radius: var(--radius);
+      cursor: pointer; text-align: left;
+      transition: border-color 0.2s, background 0.2s, box-shadow 0.2s;
+      position: relative; overflow: hidden;
+    }
+    .result-tab::before {
+      content: ''; position: absolute; inset: 0;
+      background: linear-gradient(135deg, rgba(99,102,241,0.07) 0%, transparent 60%);
+      opacity: 0; transition: opacity 0.2s;
+    }
+    .result-tab:hover { border-color: var(--border2); }
+    .result-tab:hover::before { opacity: 1; }
+    .result-tab.active {
+      border-left-color: var(--accent);
+      background: rgba(99,102,241,0.07);
+      box-shadow: 0 0 0 1px rgba(99,102,241,0.18);
+    }
+    .result-tab.active::before { opacity: 1; }
+    .rtab-icon {
+      width: 36px; height: 36px; border-radius: 10px; flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+      background: var(--border2); color: var(--muted);
+      transition: background 0.2s, color 0.2s;
+    }
+    .result-tab.active .rtab-icon {
+      background: rgba(99,102,241,0.2); color: var(--accent);
+    }
+    .rtab-body { flex: 1; min-width: 0; }
+    .rtab-title {
+      font-size: 0.85rem; font-weight: 700; color: var(--muted);
+      margin-bottom: 0.2rem; transition: color 0.2s;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .result-tab.active .rtab-title { color: var(--text); }
+    .rtab-sub {
+      font-size: 0.72rem; color: var(--muted); line-height: 1.3;
+    }
+    .rtab-badge {
+      font-size: 0.62rem; font-weight: 700; padding: 0.12rem 0.45rem;
+      border-radius: 99px; background: var(--accent); color: #fff;
+      margin-left: auto; flex-shrink: 0;
+    }
+    .tab-pane { display: none; }
+    .tab-pane.active { display: block; }
+
+    /* ── SEO Report ── */
+    .seo-hero {
+      display: flex; align-items: center; gap: 1.5rem;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.4rem 1.75rem;
+      margin-bottom: 1.25rem;
+    }
+    .seo-ring-wrap {
+      position: relative; width: 88px; height: 88px; flex-shrink: 0;
+    }
+    .seo-ring { width: 88px; height: 88px; transform: rotate(-90deg); }
+    .seo-ring-bg { fill: none; stroke: var(--border2); stroke-width: 8; }
+    .seo-ring-fill {
+      fill: none; stroke-width: 8; stroke-linecap: round; stroke: var(--muted);
+      transition: stroke-dashoffset 0.9s cubic-bezier(.4,0,.2,1), stroke 0.3s;
+    }
+    .seo-ring-fill.val-good { stroke: #4ade80; }
+    .seo-ring-fill.val-mid  { stroke: #facc15; }
+    .seo-ring-fill.val-bad  { stroke: #f87171; }
+    .seo-hero-num-wrap {
+      position: absolute; top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      text-align: center; line-height: 1;
+    }
+    .seo-hero-num { display: block; font-size: 1.5rem; font-weight: 800; }
+    .seo-hero-denom { display: block; font-size: 0.6rem; color: var(--muted); font-weight: 600; margin-top: 1px; }
+    .seo-hero-label { font-size: 1rem; font-weight: 700; letter-spacing: -0.02em; margin-bottom: 0.4rem; }
+    .seo-hero-summary { font-size: 0.82rem; color: var(--muted); line-height: 1.6; }
+    .val-good { color: #4ade80; }
+    .val-mid  { color: #facc15; }
+    .val-bad  { color: #f87171; }
+
+    /* PageSpeed bars */
+    .seo-metrics {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 1.1rem 1.25rem;
+      margin-bottom: 1.25rem;
+    }
+    .seo-metrics-title {
+      font-size: 0.7rem; font-weight: 600; letter-spacing: 0.08em;
+      color: var(--muted); text-transform: uppercase; margin-bottom: 0.75rem;
+    }
+    .seo-metric-row {
+      display: grid; grid-template-columns: 110px 1fr 36px;
+      align-items: center; gap: 0.75rem; margin-bottom: 0.65rem;
+    }
+    .seo-metric-row:last-child { margin-bottom: 0; }
+    .seo-metric-name { font-size: 0.8rem; color: var(--muted); font-weight: 500; }
+    .seo-metric-bar-wrap { height: 6px; background: var(--border2); border-radius: 99px; overflow: hidden; }
+    .seo-metric-bar { height: 100%; border-radius: 99px; width: 0; transition: width 0.7s cubic-bezier(.4,0,.2,1); }
+    .seo-metric-bar.val-good { background: #4ade80; }
+    .seo-metric-bar.val-mid  { background: #facc15; }
+    .seo-metric-bar.val-bad  { background: #f87171; }
+    .seo-metric-val { font-size: 0.8rem; font-weight: 700; text-align: right; }
+
+    /* Section cards */
+    .seo-sections { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; margin-bottom: 1.25rem; }
+    .seo-section-card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-top-width: 2px; border-radius: var(--radius); overflow: hidden;
+    }
+    .seo-section-card.green  { border-top-color: rgba(34,197,94,0.55); }
+    .seo-section-card.red    { border-top-color: rgba(248,113,113,0.55); }
+    .seo-section-card.yellow { border-top-color: rgba(250,204,21,0.55); }
+    .seo-section-card.blue   { border-top-color: rgba(129,140,248,0.55); }
+    .seo-section-header {
+      display: flex; align-items: center; gap: 0.5rem;
+      padding: 0.7rem 1rem; border-bottom: 1px solid var(--border);
+      font-size: 0.78rem; font-weight: 600;
+    }
+    .seo-section-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+    .seo-section-count {
+      margin-left: auto; font-size: 0.68rem; font-weight: 700;
+      background: var(--border2); color: var(--muted);
+      padding: 0.1rem 0.45rem; border-radius: 99px;
+    }
+    .seo-section-items { padding: 0.4rem 0; }
+    .seo-section-item { padding: 0.32rem 1rem; font-size: 0.8rem; color: var(--text); line-height: 1.4; }
+
+    /* Quick wins */
+    .seo-wins {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius); overflow: hidden; margin-bottom: 1.25rem;
+    }
+    .seo-wins-header {
+      display: flex; align-items: center; gap: 0.45rem;
+      padding: 0.8rem 1.1rem; border-bottom: 1px solid var(--border);
+      font-size: 0.82rem; font-weight: 700;
+      background: linear-gradient(90deg, rgba(99,102,241,0.1) 0%, transparent 70%);
+    }
+    .seo-win-item {
+      display: flex; align-items: flex-start; gap: 0.75rem;
+      padding: 0.65rem 1.1rem; border-bottom: 1px solid var(--border);
+      font-size: 0.83rem; line-height: 1.5;
+    }
+    .seo-win-item:last-child { border-bottom: none; }
+    .seo-win-num {
+      flex-shrink: 0; width: 20px; height: 20px; border-radius: 50%;
+      background: var(--accent); color: #fff;
+      font-size: 0.65rem; font-weight: 800;
+      display: flex; align-items: center; justify-content: center; margin-top: 2px;
+    }
+
   </style>
 </head>
 <body>
 <div class="shell">
 
-  <nav class="top-nav">
-    <a class="back-link" href="/">
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
-      Back to Analyzer
-    </a>
-  </nav>
+  <div class="badge" style="margin:0 auto 1.5rem"><span class="badge-dot"></span> AI Research</div>
 
-  <header class="header">
-    <div class="badge"><span class="badge-dot"></span> AI Research</div>
-    <h1>Market Size & CAGR Research</h1>
-    <p>Answer 5 quick questions and get an AI-powered breakdown of your market size, growth rate, and top competitor performance.</p>
+  <div class="page-tabs">
+    <a class="page-tab" href="/">
+      <div class="ptab-icon">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      </div>
+      <div class="ptab-body">
+        <div class="ptab-title">Market Strategy Intelligence</div>
+        <div class="ptab-sub">SEO gaps, signals &amp; quick wins</div>
+      </div>
+      <svg class="ptab-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+    </a>
+    <div class="page-tab active">
+      <div class="ptab-icon">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+      </div>
+      <div class="ptab-body">
+        <div class="ptab-title">Market Size &amp; CAGR Research</div>
+        <div class="ptab-sub">AI-powered market breakdown</div>
+      </div>
+    </div>
+  </div>
+
+  <header class="header" style="margin-bottom:2rem">
+    <h1>Market Size &amp; CAGR Research</h1>
+    <p>Answer 6 quick questions and get an AI-powered breakdown of your market size, growth rate, and top competitor performance.</p>
   </header>
 
   <!-- Step progress -->
@@ -525,13 +753,17 @@
     <div class="step-item">
       <div class="step-dot" id="dot5">5</div>
     </div>
+    <div class="step-connector" id="conn5"></div>
+    <div class="step-item">
+      <div class="step-dot" id="dot6">6</div>
+    </div>
   </div>
 
   <div id="errorBanner"></div>
 
   <!-- Q1: Industry -->
   <div class="question-card active" id="q1">
-    <div class="q-step-label">Question 1 of 5</div>
+    <div class="q-step-label">Question 1 of 6</div>
     <div class="q-title">What industry or market are you operating in?</div>
     <div class="q-sub">Be as specific as possible. The more detail you give, the more accurate the research.</div>
     <textarea class="q-input" id="q1Input" rows="3"
@@ -544,7 +776,7 @@
 
   <!-- Q2: Target customer -->
   <div class="question-card" id="q2">
-    <div class="q-step-label">Question 2 of 5</div>
+    <div class="q-step-label">Question 2 of 6</div>
     <div class="q-title">Who are your primary target customers?</div>
     <div class="q-sub">Select the option that best describes your ideal customer profile.</div>
     <div class="options-grid">
@@ -561,7 +793,7 @@
 
   <!-- Q3: Geography -->
   <div class="question-card" id="q3">
-    <div class="q-step-label">Question 3 of 5</div>
+    <div class="q-step-label">Question 3 of 6</div>
     <div class="q-title">What is your primary target geography?</div>
     <div class="q-sub">Where are most of your customers or where do you plan to launch first?</div>
     <div class="options-grid">
@@ -580,7 +812,7 @@
 
   <!-- Q4: Business model -->
   <div class="question-card" id="q4">
-    <div class="q-step-label">Question 4 of 5</div>
+    <div class="q-step-label">Question 4 of 6</div>
     <div class="q-title">What is your primary business model?</div>
     <div class="q-sub">How will you monetise? This helps shape which market segments are most relevant.</div>
     <div class="options-grid">
@@ -599,7 +831,7 @@
 
   <!-- Q5: Monthly Budget -->
   <div class="question-card" id="q5">
-    <div class="q-step-label">Question 5 of 5</div>
+    <div class="q-step-label">Question 5 of 6</div>
     <div class="q-title">What is your monthly marketing / growth budget?</div>
     <div class="q-sub">This helps calibrate market entry strategies and benchmarks against similar-sized players.</div>
     <div class="options-grid">
@@ -612,7 +844,19 @@
     </div>
     <div class="q-footer">
       <button class="btn btn-ghost" onclick="goBack(5)">← Back</button>
-      <button class="btn" onclick="submitResearch()" id="submitBtn" disabled>
+      <button class="btn" onclick="goNext(5)" id="nextBtn5" disabled>Continue →</button>
+    </div>
+  </div>
+
+  <!-- Q6: Your URL (optional) -->
+  <div class="question-card" id="q6">
+    <div class="q-step-label">Question 6 of 6 — Optional</div>
+    <div class="q-title">Do you have your website URL?</div>
+    <div class="q-sub">If you have a live website, drop it in and we'll open a full AI breakdown of your SEO gaps, marketing signals, and quick wins alongside your research results.</div>
+    <input class="q-input" id="q6Input" type="url" placeholder="https://yourwebsite.com" autocomplete="off" spellcheck="false" />
+    <div class="q-footer">
+      <button class="btn btn-ghost" onclick="goBack(6)">← Back</button>
+      <button class="btn" onclick="submitResearch()" id="submitBtn">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/></svg>
         Run Research
       </button>
@@ -623,12 +867,13 @@
   <div id="loadingCard">
     <div class="loading-spinner"></div>
     <div class="loading-title">Researching your market…</div>
-    <div class="loading-sub">This usually takes 10–20 seconds</div>
+    <div class="loading-sub">This usually takes 10–30 seconds</div>
     <div class="loading-steps">
       <div class="loading-step active" id="ls1"><span class="loading-step-dot"></span> Analysing market context</div>
       <div class="loading-step" id="ls2"><span class="loading-step-dot"></span> Sizing TAM / SAM / SOM</div>
       <div class="loading-step" id="ls3"><span class="loading-step-dot"></span> Calculating CAGR projections</div>
       <div class="loading-step" id="ls4"><span class="loading-step-dot"></span> Benchmarking top players</div>
+      <div class="loading-step" id="ls5" style="display:none"><span class="loading-step-dot"></span> Analysing your website</div>
     </div>
   </div>
 
@@ -642,27 +887,84 @@
       </div>
     </div>
 
-    <!-- Market size -->
-    <div class="section-label">Market Size</div>
-    <div class="market-size-grid" id="marketSizeGrid"></div>
+    <!-- Tabs -->
+    <div class="result-tabs" id="resultTabs">
+      <button class="result-tab active" id="tabMarket" onclick="switchResultTab('market')">
+        <div class="rtab-icon">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+        </div>
+        <div class="rtab-body">
+          <div class="rtab-title">Market Size &amp; CAGR</div>
+          <div class="rtab-sub">AI-powered research report</div>
+        </div>
+      </button>
+      <button class="result-tab" id="tabSeo" onclick="switchResultTab('seo')" style="display:none">
+        <div class="rtab-icon">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        </div>
+        <div class="rtab-body">
+          <div class="rtab-title">SEO Report</div>
+          <div class="rtab-sub" id="seoTabHostname">Website analysis</div>
+        </div>
+        <span class="rtab-badge" id="seoTabBadge"></span>
+      </button>
+    </div>
 
-    <!-- CAGR -->
-    <div class="section-label">Growth Rate (CAGR)</div>
-    <div class="cagr-block" id="cagrBlock"></div>
+    <!-- Market Report pane -->
+    <div class="tab-pane active" id="paneMarket">
+      <div class="section-label">Market Size</div>
+      <div class="market-size-grid" id="marketSizeGrid"></div>
 
-    <!-- Top players -->
-    <div class="section-label">Top Player Performance</div>
-    <div class="players-list" id="playersList"></div>
+      <div class="section-label">Growth Rate (CAGR)</div>
+      <div class="cagr-block" id="cagrBlock"></div>
 
-    <!-- Trends & Opportunities -->
-    <div class="two-col" id="trendsOppGrid"></div>
+      <div class="section-label">Top Player Performance</div>
+      <div class="players-list" id="playersList"></div>
+
+      <div class="section-label">Trends & Opportunities</div>
+      <div class="two-col" id="trendsOppGrid"></div>
+    </div>
+
+    <!-- Website SEO Report pane -->
+    <div class="tab-pane" id="paneSeo">
+      <!-- Score hero -->
+      <div class="seo-hero">
+        <div class="seo-ring-wrap">
+          <svg class="seo-ring" viewBox="0 0 100 100">
+            <circle class="seo-ring-bg" cx="50" cy="50" r="40"/>
+            <circle class="seo-ring-fill" id="seoRingFill" cx="50" cy="50" r="40"
+              stroke-dasharray="251.2" stroke-dashoffset="251.2"/>
+          </svg>
+          <div class="seo-hero-num-wrap">
+            <span class="seo-hero-num" id="urlScoreNum">—</span>
+            <span class="seo-hero-denom">/100</span>
+          </div>
+        </div>
+        <div class="seo-hero-text">
+          <div class="seo-hero-label" id="urlScoreLabel">Overall Score</div>
+          <div class="seo-hero-summary" id="urlScoreSummary"></div>
+        </div>
+      </div>
+
+      <!-- PageSpeed metrics -->
+      <div class="seo-metrics" id="urlSeoGrid" style="display:none"></div>
+
+      <!-- Category cards -->
+      <div class="seo-sections" id="urlTagsGrid"></div>
+
+      <!-- Quick wins -->
+      <div class="seo-wins" id="urlQuickWinsCard" style="display:none">
+        <div class="seo-wins-header"><span class="seo-wins-icon">⚡</span> Quick Wins for Your Site</div>
+        <div id="urlQuickWinsList"></div>
+      </div>
+    </div>
 
     <div class="divider"></div>
     <div class="results-footer">
       <button class="btn btn-ghost" onclick="resetAll()">← Start Over</button>
-      <button class="btn" onclick="window.print()">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
-        Export
+      <button class="btn" id="shareLinkBtn" style="display:none" onclick="copyShareLink()">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+        Copy Report Link
       </button>
     </div>
 
@@ -673,7 +975,7 @@
 
 <script>
   // ── State ──────────────────────────────────────────────
-  const answers = { q1: '', q2: '', q3: '', q4: '', q5: '' };
+  const answers = { q1: '', q2: '', q3: '', q4: '', q5: '', q6: '' };
   let currentStep = 1;
 
   // ── Navigation ─────────────────────────────────────────
@@ -686,6 +988,7 @@
     if (step === 2 && !answers.q2) return;
     if (step === 3 && !answers.q3) return;
     if (step === 4 && !answers.q4) return;
+    if (step === 5 && !answers.q5) return;
 
     markStepDone(step);
     showQuestion(step + 1);
@@ -706,7 +1009,7 @@
   }
 
   function updateDots(activeStep) {
-    for (let i = 1; i <= 5; i++) {
+    for (let i = 1; i <= 6; i++) {
       const dot = document.getElementById('dot' + i);
       if (i < activeStep) {
         dot.className = 'step-dot done';
@@ -718,7 +1021,7 @@
         dot.className = 'step-dot';
         dot.textContent = i;
       }
-      if (i < 5) {
+      if (i < 6) {
         const conn = document.getElementById('conn' + i);
         conn.className = 'step-connector' + (i < activeStep ? ' done' : '');
       }
@@ -729,7 +1032,7 @@
     const dot = document.getElementById('dot' + step);
     dot.className = 'step-dot done';
     dot.textContent = '✓';
-    if (step < 5) {
+    if (step < 6) {
       document.getElementById('conn' + step).classList.add('done');
     }
   }
@@ -738,7 +1041,7 @@
     const dot = document.getElementById('dot' + step);
     dot.className = 'step-dot active';
     dot.textContent = step;
-    if (step < 5) {
+    if (step < 6) {
       document.getElementById('conn' + step).classList.remove('done');
     }
   }
@@ -766,48 +1069,103 @@
 
   // ── Submit ──────────────────────────────────────────────
   async function submitResearch() {
-    if (!answers.q5) return;
+    answers.q6 = document.getElementById('q6Input').value.trim();
 
     document.getElementById('progressSteps').style.display = 'none';
     document.querySelectorAll('.question-card').forEach(c => c.style.display = 'none');
     document.getElementById('errorBanner').style.display = 'none';
     document.getElementById('loadingCard').style.display = 'block';
 
-    animateLoadingSteps();
+    // Show URL analysis loading step only if URL was given
+    if (answers.q6) {
+      document.getElementById('ls5').style.display = 'flex';
+    }
+    animateLoadingSteps(!!answers.q6);
 
     try {
-      const res = await fetch('/api/market-research', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          industry:       answers.q1,
-          targetCustomer: answers.q2,
-          geography:      answers.q3,
-          businessModel:  answers.q4,
-          monthlyBudget:  answers.q5,
-        })
-      });
-
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || res.statusText);
+      // Run market research + URL analysis in parallel
+      const [data, urlData] = await Promise.all([
+        fetch('/api/market-research', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            industry:       answers.q1,
+            targetCustomer: answers.q2,
+            geography:      answers.q3,
+            businessModel:  answers.q4,
+            monthlyBudget:  answers.q5,
+          })
+        }).then(r => r.json().then(d => { if (!r.ok) throw new Error(d.error || r.statusText); return d; })),
+        answers.q6 ? runUrlAnalysis(answers.q6) : Promise.resolve(null),
+      ]);
 
       document.getElementById('loadingCard').style.display = 'none';
-      renderResults(data);
+
+      // Save to DB and redirect to report page
+      try {
+        const saveRes = await fetch('/api/market-research/save', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            inputs: {
+              industry:       answers.q1,
+              targetCustomer: answers.q2,
+              geography:      answers.q3,
+              businessModel:  answers.q4,
+              monthlyBudget:  answers.q5,
+              websiteUrl:     answers.q6 || undefined,
+            },
+            reportData:   data,
+            urlAnalysis:  urlData || null,
+          })
+        });
+        const saved = await saveRes.json();
+        if (saveRes.ok && saved.report_id) {
+          savedReportId = saved.report_id;
+          document.getElementById('shareLinkBtn').style.display = 'inline-flex';
+          window.location.href = '/report/' + saved.report_id;
+          return;
+        }
+      } catch (_) { /* fall through to inline render if save fails */ }
+
+      renderResults(data, urlData);
     } catch (e) {
       document.getElementById('loadingCard').style.display = 'none';
-      // show error and restore questionnaire at last step
       const banner = document.getElementById('errorBanner');
       banner.style.display = 'block';
       banner.textContent = '✗ ' + e.message;
       document.getElementById('progressSteps').style.display = 'flex';
-      document.getElementById('q5').style.display = 'block';
-      document.getElementById('q5').classList.add('active');
+      document.getElementById('q6').style.display = 'block';
+      document.getElementById('q6').classList.add('active');
+    }
+  }
+
+  // ── URL analysis (fails gracefully) ────────────────────
+  async function runUrlAnalysis(url) {
+    try {
+      const cr = await fetch('/api/projects', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ url })
+      });
+      if (!cr.ok) return null;
+      const cd = await cr.json();
+
+      const rr = await fetch('/api/analysis/run', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ project_id: cd.project_id, type: 'full' })
+      });
+      if (!rr.ok) return null;
+      return await rr.json();
+    } catch {
+      return null; // never block market research results
     }
   }
 
   let loadingTimer = null;
-  function animateLoadingSteps() {
-    const steps = ['ls1','ls2','ls3','ls4'];
+  function animateLoadingSteps(hasUrl = false) {
+    const steps = hasUrl ? ['ls1','ls2','ls3','ls4','ls5'] : ['ls1','ls2','ls3','ls4'];
     let idx = 0;
     document.getElementById(steps[0]).classList.add('active');
     loadingTimer = setInterval(() => {
@@ -825,7 +1183,7 @@
   }
 
   // ── Render results ─────────────────────────────────────
-  function renderResults(data) {
+  function renderResults(data, urlData) {
     document.getElementById('resTitle').textContent = answers.q1 + ' — Market Report';
     document.getElementById('resOverview').textContent = data.marketOverview || '';
 
@@ -902,20 +1260,133 @@
       </div>
     `;
 
+    // URL analysis section
+    if (urlData) {
+      const ins = urlData.insights || {};
+      const seo = urlData.seoData  || {};
+
+      const score = ins.overallScore ?? '—';
+      const scoreClass = typeof score === 'number' ? (score >= 70 ? 'val-good' : score >= 40 ? 'val-mid' : 'val-bad') : '';
+      const scoreEl = document.getElementById('urlScoreNum');
+      scoreEl.textContent = score;
+      scoreEl.className = 'seo-hero-num ' + scoreClass;
+
+      // Animate SVG ring
+      const ringFill = document.getElementById('seoRingFill');
+      ringFill.className = 'seo-ring-fill ' + scoreClass;
+      if (typeof score === 'number') {
+        setTimeout(() => { ringFill.style.strokeDashoffset = 251.2 * (1 - score / 100); }, 80);
+      }
+
+      document.getElementById('urlScoreLabel').textContent = typeof score === 'number'
+        ? (score >= 80 ? 'Strong presence' : score >= 60 ? 'Good foundation' : score >= 40 ? 'Needs improvement' : 'Significant gaps')
+        : 'Overall Score';
+      document.getElementById('urlScoreSummary').textContent = ins.summary || '';
+
+      if (seo.pageSpeed) {
+        const grid = document.getElementById('urlSeoGrid');
+        grid.style.display = 'block';
+        const metrics = [
+          { label: 'Performance',    val: seo.pageSpeed.performance },
+          { label: 'SEO',            val: seo.pageSpeed.seo },
+          { label: 'Accessibility',  val: seo.pageSpeed.accessibility },
+          { label: 'Best Practices', val: seo.pageSpeed.bestPractices },
+        ];
+        grid.innerHTML = '<div class="seo-metrics-title">PageSpeed Insights</div>' + metrics.map(m => {
+          const cls = typeof m.val === 'number' ? (m.val >= 70 ? 'val-good' : m.val >= 40 ? 'val-mid' : 'val-bad') : '';
+          const pct = typeof m.val === 'number' ? m.val : 0;
+          return `<div class="seo-metric-row">
+            <div class="seo-metric-name">${m.label}</div>
+            <div class="seo-metric-bar-wrap"><div class="seo-metric-bar ${cls}" style="width:${pct}%"></div></div>
+            <div class="seo-metric-val ${cls}">${m.val ?? '—'}</div>
+          </div>`;
+        }).join('');
+      }
+
+      const tagsGrid = document.getElementById('urlTagsGrid');
+      tagsGrid.innerHTML = '';
+      [
+        { title: 'Services Detected', key: 'servicesOffered', color: 'green',  dot: '#22c55e' },
+        { title: 'Missing Services',  key: 'missingServices',  color: 'red',    dot: '#f87171' },
+        { title: 'SEO Issues',        key: 'seoIssues',        color: 'yellow', dot: '#facc15' },
+        { title: 'Marketing Gaps',    key: 'marketingGaps',    color: 'blue',   dot: '#818cf8' },
+      ].forEach(s => {
+        const items = ins[s.key] || [];
+        if (!items.length) return;
+        tagsGrid.innerHTML += `<div class="seo-section-card ${s.color}">
+          <div class="seo-section-header">
+            <span class="seo-section-dot" style="background:${s.dot}"></span>
+            ${s.title}
+            <span class="seo-section-count">${items.length}</span>
+          </div>
+          <div class="seo-section-items">${items.map(i => `<div class="seo-section-item">${i}</div>`).join('')}</div>
+        </div>`;
+      });
+
+      const wins = ins.quickWins || [];
+      if (wins.length) {
+        document.getElementById('urlQuickWinsCard').style.display = 'block';
+        document.getElementById('urlQuickWinsList').innerHTML = wins.map((w, i) =>
+          `<div class="seo-win-item"><div class="seo-win-num">${i+1}</div><div>${w}</div></div>`
+        ).join('');
+      }
+
+      // Show SEO tab with hostname
+      let hostname = answers.q6;
+      try { hostname = new URL(answers.q6).hostname; } catch (_) {}
+      document.getElementById('seoTabHostname').textContent = hostname;
+      document.getElementById('seoTabBadge').textContent = 'New';
+      document.getElementById('tabSeo').style.display = 'flex';
+    } else {
+      document.getElementById('tabSeo').style.display = 'none';
+    }
+
     document.getElementById('resultsSection').style.display = 'block';
     document.getElementById('resultsSection').scrollIntoView({ behavior: 'smooth', block: 'start' });
   }
 
+  // ── Tab switching ───────────────────────────────────────
+  function switchResultTab(name) {
+    document.getElementById('tabMarket').classList.toggle('active', name === 'market');
+    document.getElementById('tabSeo').classList.toggle('active', name === 'seo');
+    document.getElementById('paneMarket').classList.toggle('active', name === 'market');
+    document.getElementById('paneSeo').classList.toggle('active', name === 'seo');
+  }
+
+  // ── Copy share link ─────────────────────────────────────
+  let savedReportId = null;
+  function copyShareLink() {
+    if (!savedReportId) return;
+    const url = window.location.origin + '/report/' + savedReportId;
+    navigator.clipboard.writeText(url).then(() => {
+      const btn = document.getElementById('shareLinkBtn');
+      const prev = btn.innerHTML;
+      btn.textContent = '✓ Copied!';
+      setTimeout(() => { btn.innerHTML = prev; }, 2000);
+    });
+  }
+
   // ── Reset ───────────────────────────────────────────────
   function resetAll() {
-    answers.q1 = answers.q2 = answers.q3 = answers.q4 = answers.q5 = '';
+    answers.q1 = answers.q2 = answers.q3 = answers.q4 = answers.q5 = answers.q6 = '';
+    savedReportId = null;
     document.getElementById('q1Input').value = '';
+    document.getElementById('q6Input').value = '';
     document.querySelectorAll('.opt-btn').forEach(b => b.classList.remove('selected'));
-    ['nextBtn2','nextBtn3','nextBtn4','submitBtn'].forEach(id => document.getElementById(id).disabled = true);
+    ['nextBtn2','nextBtn3','nextBtn4','nextBtn5'].forEach(id => document.getElementById(id).disabled = true);
 
     document.getElementById('resultsSection').style.display = 'none';
+    document.getElementById('urlQuickWinsCard').style.display = 'none';
+    document.getElementById('urlSeoGrid').style.display = 'none';
+    document.getElementById('tabSeo').style.display = 'none';
+    document.getElementById('shareLinkBtn').style.display = 'none';
+    document.getElementById('ls5').style.display = 'none';
     document.getElementById('errorBanner').style.display = 'none';
     document.getElementById('progressSteps').style.display = 'flex';
+
+    // Reset tabs back to Market
+    switchResultTab('market');
+
     document.querySelectorAll('.question-card').forEach(c => {
       c.style.display = '';
       c.classList.remove('active');

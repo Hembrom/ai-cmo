@@ -267,79 +267,86 @@
 
     .tags-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-      gap: 1rem; margin-bottom: 1rem;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 0.75rem; margin-bottom: 1rem;
     }
+    @media (max-width: 520px) { .tags-grid { grid-template-columns: 1fr; } }
 
     .tag-card {
-      background: var(--surface2);
+      background: var(--surface);
       border: 1px solid var(--border);
-      border-radius: 11px; padding: 1rem;
+      border-top: 2px solid transparent;
+      border-radius: var(--radius); overflow: hidden;
     }
+    .tag-card.green  { border-top-color: rgba(34,197,94,0.55); }
+    .tag-card.red    { border-top-color: rgba(248,113,113,0.55); }
+    .tag-card.yellow { border-top-color: rgba(250,204,21,0.55); }
+    .tag-card.blue   { border-top-color: rgba(129,140,248,0.55); }
     .tag-card-title {
-      font-size: 0.72rem; font-weight: 600; letter-spacing: 0.06em;
-      text-transform: uppercase; color: var(--muted);
-      margin-bottom: 0.65rem;
-      display: flex; align-items: center; gap: 6px;
+      display: flex; align-items: center; gap: 0.5rem;
+      padding: 0.65rem 1rem; border-bottom: 1px solid var(--border);
+      font-size: 0.78rem; font-weight: 600;
     }
     .tag-card-title .dot {
-      width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0;
+      width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0;
     }
-    .tag-list { display: flex; flex-wrap: wrap; gap: 6px; }
-    .tag {
-      font-size: 0.75rem; padding: 3px 10px;
-      border-radius: 100px; font-weight: 500;
+    .tag-card-count {
+      margin-left: auto; font-size: 0.68rem; font-weight: 700;
+      background: var(--border2); color: var(--muted);
+      padding: 0.1rem 0.45rem; border-radius: 99px;
     }
-    .tag.green { background: rgba(34,197,94,0.1); color: #4ade80; border: 1px solid rgba(34,197,94,0.2); }
-    .tag.red { background: rgba(248,113,113,0.1); color: #fca5a5; border: 1px solid rgba(248,113,113,0.2); }
-    .tag.yellow { background: rgba(250,204,21,0.1); color: #fde047; border: 1px solid rgba(250,204,21,0.2); }
-    .tag.blue { background: rgba(99,102,241,0.1); color: #a5b4fc; border: 1px solid rgba(99,102,241,0.2); }
+    .tag-list { padding: 0.25rem 0; }
+    .tag-item { padding: 0.3rem 1rem; font-size: 0.8rem; color: var(--text); line-height: 1.4; }
 
     .quick-wins {
-      background: var(--surface2);
+      background: var(--surface);
       border: 1px solid var(--border);
-      border-radius: 11px; padding: 1rem; margin-bottom: 1rem;
+      border-radius: var(--radius); overflow: hidden; margin-bottom: 1rem;
     }
     .quick-wins-title {
-      font-size: 0.72rem; font-weight: 600; letter-spacing: 0.06em;
-      text-transform: uppercase; color: var(--muted);
-      margin-bottom: 0.75rem;
-      display: flex; align-items: center; gap: 6px;
+      display: flex; align-items: center; gap: 0.45rem;
+      padding: 0.8rem 1.1rem; border-bottom: 1px solid var(--border);
+      font-size: 0.82rem; font-weight: 700;
+      background: linear-gradient(90deg, rgba(99,102,241,0.1) 0%, transparent 70%);
     }
     .win-item {
-      display: flex; align-items: flex-start; gap: 10px;
-      padding: 8px 0;
-      border-bottom: 1px solid var(--border);
+      display: flex; align-items: flex-start; gap: 0.75rem;
+      padding: 0.65rem 1.1rem; border-bottom: 1px solid var(--border);
       font-size: 0.83rem; line-height: 1.5;
     }
-    .win-item:last-child { border-bottom: none; padding-bottom: 0; }
+    .win-item:last-child { border-bottom: none; }
     .win-num {
-      width: 20px; height: 20px; border-radius: 6px;
-      background: rgba(99,102,241,0.15); color: var(--accent-hover);
-      font-size: 0.68rem; font-weight: 700;
-      display: flex; align-items: center; justify-content: center;
-      flex-shrink: 0; margin-top: 1px;
+      flex-shrink: 0; width: 20px; height: 20px; border-radius: 50%;
+      background: var(--accent); color: #fff;
+      font-size: 0.65rem; font-weight: 800;
+      display: flex; align-items: center; justify-content: center; margin-top: 2px;
     }
 
     .seo-grid {
-      display: grid; grid-template-columns: repeat(4, 1fr);
-      gap: 0.75rem; margin-bottom: 1rem;
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 1rem 1.25rem;
+      margin-bottom: 1rem;
     }
-    @media (max-width: 500px) { .seo-grid { grid-template-columns: repeat(2, 1fr); } }
-
-    .seo-metric {
-      background: var(--surface2);
-      border: 1px solid var(--border);
-      border-radius: 11px; padding: 0.85rem 0.75rem; text-align: center;
+    .seo-grid-title {
+      font-size: 0.7rem; font-weight: 600; letter-spacing: 0.08em;
+      color: var(--muted); text-transform: uppercase; margin-bottom: 0.75rem;
     }
-    .seo-metric .val {
-      font-size: 1.3rem; font-weight: 700; line-height: 1.2; margin-bottom: 4px;
+    .seo-metric-row {
+      display: grid; grid-template-columns: 110px 1fr 36px;
+      align-items: center; gap: 0.75rem; margin-bottom: 0.6rem;
     }
-    .seo-metric .lbl { font-size: 0.68rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; }
-    .val.good { color: var(--green); }
-    .val.mid { color: var(--yellow); }
-    .val.bad { color: var(--red); }
-    .val.na { color: var(--muted); }
+    .seo-metric-row:last-child { margin-bottom: 0; }
+    .seo-metric-name { font-size: 0.8rem; color: var(--muted); font-weight: 500; }
+    .seo-bar-wrap { height: 6px; background: var(--border2); border-radius: 99px; overflow: hidden; }
+    .seo-bar { height: 100%; border-radius: 99px; transition: width 0.7s cubic-bezier(.4,0,.2,1); }
+    .seo-bar.good { background: #4ade80; }
+    .seo-bar.mid  { background: #facc15; }
+    .seo-bar.bad  { background: #f87171; }
+    .seo-metric-val { font-size: 0.8rem; font-weight: 700; text-align: right; }
+    .val.good { color: #4ade80; }
+    .val.mid  { color: #facc15; }
+    .val.bad  { color: #f87171; }
+    .val.na   { color: var(--muted); }
 
     .btn {
       background: var(--accent); color: #fff; border: none;
@@ -365,20 +372,87 @@
     .history-item:last-child { border-bottom: none; }
     .history-meta { font-size: 0.8rem; color: var(--muted); margin-top: 2px; }
     .history-score { font-size: 1rem; font-weight: 700; }
+
+    /* ── Page Tabs ── */
+    .page-tabs {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 0.75rem; margin-bottom: 2.5rem;
+    }
+    .page-tab {
+      display: flex; align-items: center; gap: 0.9rem;
+      padding: 1rem 1.25rem;
+      background: var(--surface); border: 1px solid var(--border);
+      border-top: 3px solid transparent;
+      border-radius: var(--radius);
+      cursor: pointer; text-align: left;
+      text-decoration: none;
+      transition: border-color 0.2s, background 0.2s, box-shadow 0.2s;
+      position: relative; overflow: hidden;
+    }
+    .page-tab::before {
+      content: ''; position: absolute; inset: 0;
+      background: linear-gradient(135deg, rgba(99,102,241,0.07) 0%, transparent 60%);
+      opacity: 0; transition: opacity 0.2s;
+    }
+    .page-tab:hover { border-color: var(--border2); }
+    .page-tab:hover::before { opacity: 1; }
+    .page-tab.active {
+      border-top-color: var(--accent);
+      background: rgba(99,102,241,0.07);
+      box-shadow: 0 0 0 1px rgba(99,102,241,0.18);
+    }
+    .page-tab.active::before { opacity: 1; }
+    .ptab-icon {
+      width: 38px; height: 38px; border-radius: 10px; flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+      background: var(--border2); color: var(--muted);
+      transition: background 0.2s, color 0.2s;
+    }
+    .page-tab.active .ptab-icon {
+      background: rgba(99,102,241,0.2); color: var(--accent);
+    }
+    .ptab-body { flex: 1; min-width: 0; }
+    .ptab-title {
+      font-size: 0.88rem; font-weight: 700; color: var(--muted);
+      margin-bottom: 0.2rem; transition: color 0.2s;
+    }
+    .page-tab.active .ptab-title { color: var(--text); }
+    .ptab-sub { font-size: 0.72rem; color: var(--muted); line-height: 1.3; }
+    .ptab-arrow {
+      color: var(--muted); flex-shrink: 0;
+      transition: transform 0.2s, color 0.2s;
+    }
+    .page-tab:hover .ptab-arrow { transform: translateX(3px); color: var(--accent); }
   </style>
 </head>
 <body>
 <div class="shell">
 
-  <div style="text-align:right;margin-bottom:1.5rem">
-    <a href="/market-research" style="display:inline-flex;align-items:center;gap:6px;background:rgba(99,102,241,0.1);border:1px solid rgba(99,102,241,0.25);color:#a5b4fc;text-decoration:none;font-size:0.78rem;font-weight:600;padding:6px 14px;border-radius:100px;transition:all 0.15s" onmouseover="this.style.background='rgba(99,102,241,0.18)'" onmouseout="this.style.background='rgba(99,102,241,0.1)'">
-      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="20" x2="12" y2="10"/><line x1="18" y1="20" x2="18" y2="4"/><line x1="6" y1="20" x2="6" y2="16"/></svg>
-      Market Size & CAGR Research →
+  <div class="badge" style="margin:0 auto 1.5rem"><span class="badge-dot"></span> AI-Powered</div>
+
+  <div class="page-tabs">
+    <div class="page-tab active">
+      <div class="ptab-icon">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      </div>
+      <div class="ptab-body">
+        <div class="ptab-title">Market Strategy Intelligence</div>
+        <div class="ptab-sub">SEO gaps, signals &amp; quick wins</div>
+      </div>
+    </div>
+    <a class="page-tab" href="/market-research">
+      <div class="ptab-icon">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+      </div>
+      <div class="ptab-body">
+        <div class="ptab-title">Market Size &amp; CAGR Research</div>
+        <div class="ptab-sub">AI-powered market breakdown</div>
+      </div>
+      <svg class="ptab-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
     </a>
   </div>
 
-  <header class="header">
-    <div class="badge"><span class="badge-dot"></span> AI-Powered</div>
+  <header class="header" style="margin-bottom:2rem">
     <h1>Market Strategy Intelligence</h1>
     <p>Drop in any URL. Get a full AI breakdown of SEO gaps, marketing signals, and quick wins — instantly.</p>
   </header>
@@ -538,12 +612,23 @@
 
     if (seo.pageSpeed) {
       document.getElementById("seoSection").style.display = "block";
-      document.getElementById("seoGrid").innerHTML = [
-        { label: "Performance", val: seo.pageSpeed.performance },
-        { label: "SEO", val: seo.pageSpeed.seo },
-        { label: "Accessibility", val: seo.pageSpeed.accessibility },
+      const metrics = [
+        { label: "Performance",    val: seo.pageSpeed.performance },
+        { label: "SEO",            val: seo.pageSpeed.seo },
+        { label: "Accessibility",  val: seo.pageSpeed.accessibility },
         { label: "Best Practices", val: seo.pageSpeed.bestPractices },
-      ].map(m => `<div class="seo-metric"><div class="val ${scoreClass(m.val)}">${m.val}</div><div class="lbl">${m.label}</div></div>`).join("");
+      ];
+      document.getElementById("seoGrid").innerHTML =
+        '<div class="seo-grid-title">PageSpeed Insights</div>' +
+        metrics.map(m => {
+          const cls = scoreClass(m.val);
+          const pct = typeof m.val === 'number' ? m.val : 0;
+          return `<div class="seo-metric-row">
+            <div class="seo-metric-name">${m.label}</div>
+            <div class="seo-bar-wrap"><div class="seo-bar ${cls}" style="width:${pct}%"></div></div>
+            <div class="seo-metric-val val ${cls}">${m.val ?? '—'}</div>
+          </div>`;
+        }).join("");
     }
 
     const grid = document.getElementById("tagsGrid");
@@ -551,19 +636,27 @@
     [
       { title: "Services Detected", key: "servicesOffered", color: "green", dot: "#22c55e" },
       { title: "Missing Services",  key: "missingServices",  color: "red",   dot: "#f87171" },
-      { title: "SEO Issues",        key: "seoIssues",        color: "yellow",dot: "#facc15" },
+      { title: "SEO Issues",        key: "seoIssues",        color: "yellow", dot: "#facc15" },
       { title: "Marketing Gaps",    key: "marketingGaps",    color: "blue",  dot: "#818cf8" },
     ].forEach(s => {
       const items = ins[s.key] || [];
       if (!items.length) return;
-      grid.innerHTML += `<div class="tag-card"><div class="tag-card-title"><span class="dot" style="background:${s.dot}"></span>${s.title}</div><div class="tag-list">${items.map(i => `<span class="tag ${s.color}">${i}</span>`).join("")}</div></div>`;
+      grid.innerHTML += `<div class="tag-card ${s.color}">
+        <div class="tag-card-title">
+          <span class="dot" style="background:${s.dot}"></span>
+          ${s.title}
+          <span class="tag-card-count">${items.length}</span>
+        </div>
+        <div class="tag-list">${items.map(i => `<div class="tag-item">${i}</div>`).join("")}</div>
+      </div>`;
     });
 
     const wins = ins.quickWins || [];
     if (wins.length) {
       document.getElementById("quickWinsCard").style.display = "block";
       document.getElementById("quickWinsList").innerHTML = wins.map((w, i) =>
-        `<div class="win-item"><span class="win-num">${i+1}</span>${w}</div>`).join("");
+        `<div class="win-item"><div class="win-num">${i+1}</div><div>${w}</div></div>`
+      ).join("");
     }
 
     document.getElementById("results").style.display = "block";
@@ -637,6 +730,19 @@
   document.getElementById("urlInput").addEventListener("keydown", e => {
     if (e.key === "Enter") fullAnalyze();
   });
+
+  // Auto-analyze when redirected from Market Research with a URL
+  (function () {
+    const params = new URLSearchParams(window.location.search);
+    const urlParam = params.get("url");
+    if (urlParam) {
+      document.getElementById("urlInput").value = urlParam;
+      // Clean the URL param from history without reloading
+      const clean = window.location.pathname;
+      window.history.replaceState(null, "", clean);
+      fullAnalyze();
+    }
+  })();
 </script>
 </body>
 </html>

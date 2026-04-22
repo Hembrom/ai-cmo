@@ -1,5 +1,5 @@
 import { Pool } from "pg";
-import type { Analysis, Project } from "./types";
+import type { Analysis, MarketResearchReport, Project } from "./types";
 
 const pool = new Pool({
   host:     process.env.POSTGRES_HOST,
@@ -84,4 +84,56 @@ export async function getAnalysesByProjectId(projectId: string): Promise<Analysi
     seoData:     row.seo_data,
     insights:    row.insights,
   }));
+}
+
+export async function saveMarketResearchReport(
+  id: string,
+  inputs: { industry: string; targetCustomer: string; geography: string; businessModel: string; monthlyBudget: string; websiteUrl?: string },
+  reportData: Record<string, unknown>,
+  urlAnalysis: Record<string, unknown> | null,
+): Promise<MarketResearchReport> {
+  const reportJson     = JSON.stringify(reportData);
+  const urlAnalysisJson = urlAnalysis ? JSON.stringify(urlAnalysis) : null;
+
+  const { rows } = await sql`
+    INSERT INTO market_research_reports
+      (id, industry, target_customer, geography, business_model, monthly_budget, website_url, report_data, url_analysis, created_at)
+    VALUES (
+      ${id},
+      ${inputs.industry},
+      ${inputs.targetCustomer || null},
+      ${inputs.geography || null},
+      ${inputs.businessModel || null},
+      ${inputs.monthlyBudget || null},
+      ${inputs.websiteUrl || null},
+      ${reportJson}::jsonb,
+      ${urlAnalysisJson}::jsonb,
+      NOW()
+    )
+    RETURNING *
+  `;
+  return rowToReport(rows[0]);
+}
+
+export async function getMarketResearchReport(id: string): Promise<MarketResearchReport | null> {
+  const { rows } = await sql`
+    SELECT * FROM market_research_reports WHERE id = ${id}
+  `;
+  if (!rows.length) return null;
+  return rowToReport(rows[0]);
+}
+
+function rowToReport(row: Record<string, unknown>): MarketResearchReport {
+  return {
+    id:             row.id as string,
+    industry:       row.industry as string,
+    targetCustomer: row.target_customer as string,
+    geography:      row.geography as string,
+    businessModel:  row.business_model as string,
+    monthlyBudget:  row.monthly_budget as string,
+    websiteUrl:     row.website_url as string | null,
+    reportData:     row.report_data as Record<string, unknown>,
+    urlAnalysis:    row.url_analysis as Record<string, unknown> | null,
+    createdAt:      row.created_at as string,
+  };
 }

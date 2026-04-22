@@ -71,3 +71,16 @@ export interface Analysis {
   seoData: SEOData;
   insights: AIInsights;
 }
+
+export interface MarketResearchReport {
+  id: string;
+  industry: string;
+  targetCustomer: string;
+  geography: string;
+  businessModel: string;
+  monthlyBudget: string;
+  websiteUrl: string | null;
+  reportData: Record<string, unknown>;
+  urlAnalysis: Record<string, unknown> | null;
+  createdAt: string;
+}
