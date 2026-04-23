@@ -77,8 +77,11 @@
 
     /* ── Page Tabs ── */
     .page-tabs {
-      display: grid; grid-template-columns: 1fr 1fr;
+      display: grid; grid-template-columns: repeat(3, 1fr);
       gap: 0.75rem; margin-bottom: 2.5rem;
+    }
+    @media (max-width: 600px) {
+      .page-tabs { grid-template-columns: 1fr; }
     }
     .page-tab {
       display: flex; align-items: center; gap: 0.9rem;
@@ -725,6 +728,16 @@
         <div class="ptab-sub">AI-powered market breakdown</div>
       </div>
     </div>
+    <a class="page-tab" href="/funnel-strategy">
+      <div class="ptab-icon">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+      </div>
+      <div class="ptab-body">
+        <div class="ptab-title">Funnel Strategy Builder</div>
+        <div class="ptab-sub">AIDA-mapped action plan</div>
+      </div>
+      <svg class="ptab-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+    </a>
   </div>
 
   <header class="header" style="margin-bottom:2rem">

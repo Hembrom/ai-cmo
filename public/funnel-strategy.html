@@ -1,0 +1,837 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>AI CMO — Funnel Strategy Builder</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #080810;
+      --surface: #0e0e1a;
+      --surface2: #13131f;
+      --border: #1e1e30;
+      --border2: #252538;
+      --text: #e2e2f0;
+      --muted: #6b6b8a;
+      --accent: #6366f1;
+      --accent-glow: rgba(99,102,241,0.35);
+      --accent-hover: #818cf8;
+      --green: #22c55e;
+      --red: #f87171;
+      --yellow: #facc15;
+      --radius: 14px;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Inter', system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      top: -200px; left: -200px;
+      width: 600px; height: 600px;
+      background: radial-gradient(circle, rgba(99,102,241,0.12) 0%, transparent 70%);
+      pointer-events: none; z-index: 0;
+    }
+    body::after {
+      content: '';
+      position: fixed;
+      bottom: -200px; right: -100px;
+      width: 500px; height: 500px;
+      background: radial-gradient(circle, rgba(139,92,246,0.08) 0%, transparent 70%);
+      pointer-events: none; z-index: 0;
+    }
+
+    .shell {
+      position: relative; z-index: 1;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 3rem 1.5rem 6rem;
+    }
+
+    .badge {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: rgba(99,102,241,0.12);
+      border: 1px solid rgba(99,102,241,0.3);
+      color: var(--accent-hover);
+      font-size: 0.72rem; font-weight: 600; letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 4px 12px; border-radius: 100px;
+      margin-bottom: 1.25rem;
+    }
+    .badge-dot {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: var(--accent-hover);
+      animation: pulse 2s infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.5; transform: scale(0.8); }
+    }
+
+    /* ── Page Tabs ── */
+    .page-tabs {
+      display: grid; grid-template-columns: repeat(3, 1fr);
+      gap: 0.75rem; margin-bottom: 2.5rem;
+    }
+    .page-tab {
+      display: flex; align-items: center; gap: 0.9rem;
+      padding: 1rem 1.25rem;
+      background: var(--surface); border: 1px solid var(--border);
+      border-top: 3px solid transparent;
+      border-radius: var(--radius);
+      cursor: pointer; text-align: left;
+      text-decoration: none;
+      transition: border-color 0.2s, background 0.2s, box-shadow 0.2s;
+      position: relative; overflow: hidden;
+    }
+    .page-tab::before {
+      content: ''; position: absolute; inset: 0;
+      background: linear-gradient(135deg, rgba(99,102,241,0.07) 0%, transparent 60%);
+      opacity: 0; transition: opacity 0.2s;
+    }
+    .page-tab:hover { border-color: var(--border2); }
+    .page-tab:hover::before { opacity: 1; }
+    .page-tab.active {
+      border-top-color: var(--accent);
+      background: rgba(99,102,241,0.07);
+      box-shadow: 0 0 0 1px rgba(99,102,241,0.18);
+    }
+    .page-tab.active::before { opacity: 1; }
+    .ptab-icon {
+      width: 38px; height: 38px; border-radius: 10px; flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+      background: var(--border2); color: var(--muted);
+      transition: background 0.2s, color 0.2s;
+    }
+    .page-tab.active .ptab-icon {
+      background: rgba(99,102,241,0.2); color: var(--accent);
+    }
+    .ptab-body { flex: 1; min-width: 0; }
+    .ptab-title {
+      font-size: 0.88rem; font-weight: 700; color: var(--muted);
+      margin-bottom: 0.2rem; transition: color 0.2s;
+    }
+    .page-tab.active .ptab-title { color: var(--text); }
+    .ptab-sub { font-size: 0.72rem; color: var(--muted); line-height: 1.3; }
+    .ptab-arrow {
+      color: var(--muted); flex-shrink: 0;
+      transition: transform 0.2s, color 0.2s;
+    }
+    .page-tab:hover .ptab-arrow { transform: translateX(3px); color: var(--accent); }
+
+    @media (max-width: 600px) {
+      .page-tabs { grid-template-columns: 1fr; }
+    }
+
+    /* ── Header ── */
+    .header { text-align: center; margin-bottom: 3rem; }
+    .header h1 {
+      font-size: clamp(1.8rem, 5vw, 2.6rem);
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      line-height: 1.15;
+      background: linear-gradient(135deg, #fff 0%, #a5b4fc 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 0.75rem;
+    }
+    .header p {
+      color: var(--muted);
+      font-size: 1rem;
+      line-height: 1.6;
+      max-width: 500px;
+      margin: 0 auto;
+    }
+
+    /* ── Form ── */
+    .form-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.75rem;
+      margin-bottom: 1.5rem;
+    }
+    .form-card h2 {
+      font-size: 0.85rem; font-weight: 600;
+      color: var(--muted); text-transform: uppercase; letter-spacing: 0.07em;
+      margin-bottom: 1.25rem;
+    }
+    .form-grid {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+    }
+    @media (max-width: 560px) { .form-grid { grid-template-columns: 1fr; } }
+
+    .field { display: flex; flex-direction: column; gap: 6px; }
+    .field.full { grid-column: 1 / -1; }
+
+    label {
+      font-size: 0.8rem; font-weight: 600; color: var(--muted);
+    }
+    label span { color: var(--red); margin-left: 2px; }
+
+    textarea, select, input[type="text"] {
+      background: var(--surface2);
+      border: 1px solid var(--border2);
+      border-radius: 10px;
+      color: var(--text);
+      font-family: inherit;
+      font-size: 0.9rem;
+      padding: 0.7rem 0.9rem;
+      transition: border-color 0.2s, box-shadow 0.2s;
+      outline: none;
+      width: 100%;
+    }
+    textarea {
+      resize: vertical;
+      min-height: 80px;
+      line-height: 1.5;
+    }
+    textarea:focus, select:focus, input:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px var(--accent-glow);
+    }
+    textarea::placeholder, input::placeholder { color: var(--muted); }
+    select { cursor: pointer; -webkit-appearance: none; }
+    select option { background: #1a1a2e; color: var(--text); }
+
+    .select-wrap { position: relative; }
+    .select-wrap::after {
+      content: '';
+      position: absolute; right: 12px; top: 50%; transform: translateY(-50%);
+      width: 0; height: 0;
+      border-left: 5px solid transparent;
+      border-right: 5px solid transparent;
+      border-top: 5px solid var(--muted);
+      pointer-events: none;
+    }
+
+    .generate-btn {
+      width: 100%; margin-top: 1.25rem;
+      background: var(--accent); color: #fff;
+      border: none; border-radius: 10px;
+      padding: 0.85rem 1.5rem;
+      font-size: 0.95rem; font-weight: 600; font-family: inherit;
+      cursor: pointer;
+      transition: background 0.15s, transform 0.1s, box-shadow 0.2s;
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+    }
+    .generate-btn:hover { background: var(--accent-hover); box-shadow: 0 4px 20px rgba(99,102,241,0.4); }
+    .generate-btn:active { transform: scale(0.98); }
+    .generate-btn:disabled { background: var(--border2); color: var(--muted); cursor: not-allowed; box-shadow: none; }
+
+    /* ── Status ── */
+    .status-bar {
+      display: none;
+      align-items: center; gap: 8px;
+      margin-bottom: 1.5rem;
+      font-size: 0.82rem; font-weight: 500;
+      padding: 10px 14px;
+      border-radius: 10px;
+      border: 1px solid transparent;
+    }
+    .status-bar.show { display: flex; }
+    .status-bar.ok { color: var(--green); background: rgba(34,197,94,0.07); border-color: rgba(34,197,94,0.2); }
+    .status-bar.err { color: var(--red); background: rgba(248,113,113,0.07); border-color: rgba(248,113,113,0.2); }
+    .status-bar.loading { color: #a5b4fc; background: rgba(99,102,241,0.07); border-color: rgba(99,102,241,0.2); }
+
+    .spinner {
+      width: 14px; height: 14px; flex-shrink: 0;
+      border: 2px solid rgba(165,180,252,0.3);
+      border-top-color: #a5b4fc;
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ── Results ── */
+    #results { display: none; }
+
+    .summary-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--accent);
+      border-radius: var(--radius);
+      padding: 1.25rem 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+    .summary-card .framework-badge {
+      display: inline-block;
+      background: rgba(99,102,241,0.15);
+      border: 1px solid rgba(99,102,241,0.3);
+      color: var(--accent-hover);
+      font-size: 0.7rem; font-weight: 700; letter-spacing: 0.08em;
+      text-transform: uppercase;
+      padding: 3px 10px; border-radius: 6px; margin-bottom: 0.6rem;
+    }
+    .summary-card p {
+      font-size: 0.9rem; color: var(--muted); line-height: 1.65;
+    }
+
+    /* ── Funnel Layout ── */
+    .funnel-layout {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.25rem;
+      margin-bottom: 1.5rem;
+    }
+    @media (max-width: 640px) {
+      .funnel-layout { grid-template-columns: 1fr; }
+    }
+
+    /* ── Funnel Visualization ── */
+    .funnel-wrap {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.25rem;
+    }
+    .funnel-wrap h3 {
+      font-size: 0.78rem; font-weight: 600; letter-spacing: 0.07em;
+      color: var(--muted); text-transform: uppercase; margin-bottom: 1rem;
+    }
+
+    #funnelSvg {
+      width: 100%; height: auto; display: block;
+      cursor: pointer;
+    }
+    #funnelSvg .funnel-poly {
+      transition: opacity 0.15s, filter 0.15s;
+      cursor: pointer;
+    }
+    #funnelSvg .funnel-poly:hover {
+      opacity: 0.85;
+      filter: brightness(1.1);
+    }
+    #funnelSvg .funnel-poly.selected {
+      filter: brightness(1.2) drop-shadow(0 0 6px rgba(255,255,255,0.3));
+    }
+
+    .funnel-legend {
+      margin-top: 1rem;
+      display: flex; flex-direction: column; gap: 6px;
+    }
+    .legend-row {
+      display: flex; align-items: center; gap: 8px;
+      font-size: 0.78rem; color: var(--muted);
+      cursor: pointer; padding: 4px 6px; border-radius: 6px;
+      transition: background 0.15s;
+    }
+    .legend-row:hover { background: var(--border); }
+    .legend-row.selected { background: var(--border2); color: var(--text); }
+    .legend-dot {
+      width: 10px; height: 10px; border-radius: 3px; flex-shrink: 0;
+    }
+    .legend-name { font-weight: 500; flex: 1; }
+    .legend-vol { font-size: 0.72rem; opacity: 0.7; }
+    .legend-click-hint {
+      font-size: 0.68rem; margin-top: 6px; color: var(--muted);
+      text-align: center; opacity: 0.7;
+    }
+
+    /* ── Stage Detail Panel ── */
+    .stage-detail {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.25rem;
+      display: flex; flex-direction: column; gap: 1rem;
+    }
+    .stage-detail-empty {
+      height: 100%; display: flex; flex-direction: column;
+      align-items: center; justify-content: center; gap: 0.5rem;
+      color: var(--muted); text-align: center; min-height: 200px;
+    }
+    .stage-detail-empty svg { opacity: 0.3; }
+    .stage-detail-empty p { font-size: 0.82rem; max-width: 160px; line-height: 1.5; }
+
+    .detail-header {
+      display: flex; align-items: center; gap: 10px;
+      margin-bottom: 0.25rem;
+    }
+    .detail-stage-dot {
+      width: 10px; height: 10px; border-radius: 3px; flex-shrink: 0;
+    }
+    .detail-stage-name {
+      font-size: 1rem; font-weight: 700; color: var(--text);
+    }
+    .detail-vol-badge {
+      margin-left: auto; font-size: 0.72rem; font-weight: 700;
+      padding: 2px 8px; border-radius: 6px;
+      background: var(--border2); color: var(--muted);
+    }
+
+    .detail-section { }
+    .detail-section-title {
+      font-size: 0.7rem; font-weight: 700; letter-spacing: 0.08em;
+      text-transform: uppercase; color: var(--muted);
+      margin-bottom: 0.5rem;
+    }
+    .chip-list {
+      display: flex; flex-wrap: wrap; gap: 6px;
+    }
+    .chip {
+      background: var(--surface2);
+      border: 1px solid var(--border2);
+      color: var(--text);
+      font-size: 0.78rem; font-weight: 500;
+      padding: 4px 10px; border-radius: 8px;
+      line-height: 1.3;
+    }
+
+    .kpi-list { display: flex; flex-direction: column; gap: 4px; }
+    .kpi-item {
+      display: flex; align-items: center; gap: 7px;
+      font-size: 0.82rem; color: var(--text);
+    }
+    .kpi-item::before {
+      content: '';
+      width: 5px; height: 5px; border-radius: 50%;
+      background: var(--accent); flex-shrink: 0;
+    }
+
+    .risk-box {
+      background: rgba(248,113,113,0.07);
+      border: 1px solid rgba(248,113,113,0.2);
+      border-radius: 8px; padding: 0.7rem 1rem;
+      font-size: 0.82rem; color: #fca5a5; line-height: 1.55;
+      display: flex; gap: 8px; align-items: flex-start;
+    }
+    .risk-icon { flex-shrink: 0; margin-top: 1px; }
+
+    /* ── Budget Allocation ── */
+    .budget-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+    .budget-card h3 {
+      font-size: 0.78rem; font-weight: 600; letter-spacing: 0.07em;
+      color: var(--muted); text-transform: uppercase; margin-bottom: 1.25rem;
+    }
+    .budget-row {
+      display: grid; grid-template-columns: 130px 1fr 44px;
+      align-items: center; gap: 0.75rem; margin-bottom: 0.7rem;
+    }
+    .budget-row:last-child { margin-bottom: 0; }
+    .budget-label { font-size: 0.82rem; color: var(--muted); font-weight: 500; display: flex; align-items: center; gap: 6px; }
+    .budget-label-dot { width: 8px; height: 8px; border-radius: 3px; flex-shrink: 0; }
+    .budget-bar-wrap { height: 7px; background: var(--border2); border-radius: 99px; overflow: hidden; }
+    .budget-bar { height: 100%; border-radius: 99px; transition: width 0.7s cubic-bezier(.4,0,.2,1); }
+    .budget-pct { font-size: 0.82rem; font-weight: 700; text-align: right; color: var(--text); }
+
+    /* ── Actions ── */
+    .result-actions {
+      display: flex; gap: 0.75rem; justify-content: flex-end; margin-top: 0.5rem;
+    }
+    .btn {
+      background: var(--accent); color: #fff; border: none;
+      border-radius: 9px; padding: 0.6rem 1.2rem;
+      font-size: 0.88rem; font-weight: 600; font-family: inherit;
+      cursor: pointer;
+      transition: background 0.15s, transform 0.1s;
+    }
+    .btn:hover { background: var(--accent-hover); }
+    .btn:active { transform: scale(0.97); }
+    .btn-ghost {
+      background: var(--surface2);
+      border: 1px solid var(--border2); color: var(--text);
+    }
+    .btn-ghost:hover { background: var(--border); }
+  </style>
+</head>
+<body>
+<div class="shell">
+
+  <div class="badge" style="margin:0 auto 1.5rem"><span class="badge-dot"></span> AI-Powered</div>
+
+  <!-- Page Tabs -->
+  <div class="page-tabs">
+    <a class="page-tab" href="/">
+      <div class="ptab-icon">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      </div>
+      <div class="ptab-body">
+        <div class="ptab-title">Market Strategy Intelligence</div>
+        <div class="ptab-sub">SEO gaps, signals &amp; quick wins</div>
+      </div>
+      <svg class="ptab-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+    </a>
+    <a class="page-tab" href="/market-research">
+      <div class="ptab-icon">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+      </div>
+      <div class="ptab-body">
+        <div class="ptab-title">Market Size &amp; CAGR Research</div>
+        <div class="ptab-sub">AI-powered market breakdown</div>
+      </div>
+      <svg class="ptab-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+    </a>
+    <div class="page-tab active">
+      <div class="ptab-icon">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+      </div>
+      <div class="ptab-body">
+        <div class="ptab-title">Funnel Strategy Builder</div>
+        <div class="ptab-sub">AIDA-mapped action plan</div>
+      </div>
+    </div>
+  </div>
+
+  <header class="header">
+    <h1>Funnel Strategy Builder</h1>
+    <p>Describe your business, customer, and budget — get a full AIDA funnel with channels, content ideas, KPIs, and drop-off risks.</p>
+  </header>
+
+  <!-- Input Form -->
+  <div class="form-card">
+    <h2>Your Business Context</h2>
+    <div class="form-grid">
+      <div class="field full">
+        <label for="industry">Industry &amp; Product Context <span>*</span></label>
+        <textarea id="industry" placeholder="e.g. D2C skincare brand selling anti-ageing serums targeting urban women in India, priced at ₹1,200 per bottle" rows="3"></textarea>
+      </div>
+      <div class="field full">
+        <label for="icp">Ideal Customer Profile (ICP) <span>*</span></label>
+        <textarea id="icp" placeholder="e.g. Urban women aged 28–45, working professionals, health-conscious, active on Instagram, earning ₹8L+ p.a." rows="3"></textarea>
+      </div>
+      <div class="field">
+        <label for="budget">Monthly Marketing Budget <span>*</span></label>
+        <div class="select-wrap">
+          <select id="budget">
+            <option value="" disabled selected>Select budget range</option>
+            <option value="Under ₹10,000/mo">Under ₹10,000 / mo</option>
+            <option value="₹10,000–₹50,000/mo">₹10,000 – ₹50,000 / mo</option>
+            <option value="₹50,000–₹2,00,000/mo">₹50,000 – ₹2,00,000 / mo</option>
+            <option value="₹2,00,000–₹5,00,000/mo">₹2,00,000 – ₹5,00,000 / mo</option>
+            <option value="Above ₹5,00,000/mo">Above ₹5,00,000 / mo</option>
+          </select>
+        </div>
+      </div>
+      <div class="field">
+        <label for="goal">Primary Goal <span>*</span></label>
+        <div class="select-wrap">
+          <select id="goal">
+            <option value="" disabled selected>Select primary goal</option>
+            <option value="Lead Generation">Lead Generation</option>
+            <option value="Website Traffic">Website Traffic</option>
+            <option value="Direct Sales / Revenue">Direct Sales / Revenue</option>
+            <option value="Brand Awareness">Brand Awareness</option>
+            <option value="App Downloads">App Downloads</option>
+            <option value="Customer Retention">Customer Retention</option>
+          </select>
+        </div>
+      </div>
+    </div>
+    <button class="generate-btn" id="generateBtn" onclick="generateFunnel()">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+      Build My Funnel Strategy →
+    </button>
+  </div>
+
+  <div id="mainStatus" class="status-bar"></div>
+
+  <!-- Results -->
+  <div id="results">
+    <!-- Summary -->
+    <div class="summary-card">
+      <div id="frameworkBadge" class="framework-badge">AIDA</div>
+      <p id="summaryText"></p>
+    </div>
+
+    <!-- Funnel + Detail -->
+    <div class="funnel-layout">
+      <!-- Funnel visualization -->
+      <div class="funnel-wrap">
+        <h3>Conversion Funnel</h3>
+        <svg id="funnelSvg" viewBox="0 0 480 380" xmlns="http://www.w3.org/2000/svg"></svg>
+        <div class="funnel-legend" id="funnelLegend"></div>
+        <p class="legend-click-hint">Click any stage to see the action plan</p>
+      </div>
+
+      <!-- Stage detail -->
+      <div class="stage-detail" id="stageDetail">
+        <div class="stage-detail-empty">
+          <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          <p>Click a funnel stage to see its action plan</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Budget Allocation -->
+    <div class="budget-card">
+      <h3>Recommended Budget Allocation</h3>
+      <div id="budgetBars"></div>
+    </div>
+
+    <div class="result-actions">
+      <button class="btn btn-ghost" onclick="resetUI()">← New Strategy</button>
+      <button class="btn" onclick="generateFunnel()">Regenerate</button>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  // Stage colors aligned with what the API returns
+  const STAGE_COLORS = {
+    Awareness:     '#4f46e5',
+    Consideration: '#7c3aed',
+    Intent:        '#c026d3',
+    Conversion:    '#d97706',
+    Loyalty:       '#16a34a',
+  };
+
+  // SVG funnel geometry — 5 trapezoids with 4px gaps, viewBox 480×380
+  // Left-margin at each horizontal boundary (index 0..5)
+  const MARGINS = [0, 37, 74, 111, 148, 185];
+  const GAP     = 4;
+  const SEG_H   = 68;
+  const W       = 480;
+
+  let currentData  = null;
+  let selectedIdx  = null;
+
+  async function generateFunnel() {
+    const industry = document.getElementById('industry').value.trim();
+    const icp      = document.getElementById('icp').value.trim();
+    const budget   = document.getElementById('budget').value;
+    const goal     = document.getElementById('goal').value;
+
+    if (!industry) return showStatus('Please describe your industry and product.', 'err');
+    if (!icp)      return showStatus('Please describe your ideal customer profile.', 'err');
+    if (!budget)   return showStatus('Please select a monthly budget range.', 'err');
+    if (!goal)     return showStatus('Please select a primary goal.', 'err');
+
+    const btn = document.getElementById('generateBtn');
+    btn.disabled = true;
+    btn.innerHTML = '<div class="spinner" style="border-color:rgba(255,255,255,0.3);border-top-color:#fff"></div> Generating…';
+
+    hideResults();
+    showStatus('Analysing your inputs and building the funnel… (up to 30s)', 'loading', true);
+
+    try {
+      const res = await fetch('/api/funnel-strategy', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ industry, icp, budget, goal }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || res.statusText);
+
+      currentData = data;
+      selectedIdx = null;
+      showStatus('Funnel ready', 'ok');
+      renderResults(data);
+    } catch (e) {
+      showStatus(e.message, 'err');
+    } finally {
+      btn.disabled = false;
+      btn.innerHTML = '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg> Build My Funnel Strategy →';
+    }
+  }
+
+  function renderResults(data) {
+    // Summary
+    document.getElementById('frameworkBadge').textContent = data.framework || 'AIDA';
+    document.getElementById('summaryText').textContent = data.summary || '';
+
+    // Funnel SVG
+    renderFunnelSvg(data.stages);
+
+    // Legend
+    renderLegend(data.stages);
+
+    // Budget
+    renderBudget(data.budgetAllocation, data.stages);
+
+    // Show
+    document.getElementById('results').style.display = 'block';
+    document.getElementById('results').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  function renderFunnelSvg(stages) {
+    const svg = document.getElementById('funnelSvg');
+    let html = '';
+
+    stages.forEach((stage, i) => {
+      const y1 = i * (SEG_H + GAP);
+      const y2 = y1 + SEG_H;
+      const m1 = MARGINS[i];
+      const m2 = MARGINS[i + 1];
+      const xl1 = m1, xr1 = W - m1;
+      const xl2 = m2, xr2 = W - m2;
+      const color = STAGE_COLORS[stage.name] || '#6366f1';
+      const cx = W / 2;
+      const cy = y1 + SEG_H / 2;
+
+      html += `<polygon
+        points="${xl1},${y1} ${xr1},${y1} ${xr2},${y2} ${xl2},${y2}"
+        fill="${color}"
+        class="funnel-poly"
+        data-index="${i}"
+        onclick="selectStage(${i})"
+        rx="4"
+      />`;
+
+      // Stage name
+      html += `<text x="${cx}" y="${cy - 7}" text-anchor="middle" fill="rgba(255,255,255,0.95)"
+        font-family="Inter,system-ui,sans-serif" font-size="13" font-weight="600"
+        pointer-events="none">${stage.name}</text>`;
+
+      // Volume label
+      html += `<text x="${cx}" y="${cy + 12}" text-anchor="middle" fill="rgba(255,255,255,0.6)"
+        font-family="Inter,system-ui,sans-serif" font-size="11" font-weight="400"
+        pointer-events="none">${stage.volume}% reach</text>`;
+    });
+
+    svg.innerHTML = html;
+
+    // Update viewBox height
+    const totalH = stages.length * (SEG_H + GAP) - GAP;
+    svg.setAttribute('viewBox', `0 0 ${W} ${totalH}`);
+  }
+
+  function renderLegend(stages) {
+    const el = document.getElementById('funnelLegend');
+    el.innerHTML = stages.map((s, i) => {
+      const color = STAGE_COLORS[s.name] || '#6366f1';
+      return `<div class="legend-row" id="legend-${i}" onclick="selectStage(${i})">
+        <div class="legend-dot" style="background:${color}"></div>
+        <span class="legend-name">${s.name}</span>
+        <span class="legend-vol">${s.volume}%</span>
+      </div>`;
+    }).join('');
+  }
+
+  function selectStage(idx) {
+    if (!currentData) return;
+    selectedIdx = idx;
+    const stage = currentData.stages[idx];
+    const color = STAGE_COLORS[stage.name] || '#6366f1';
+
+    // Update SVG selection state
+    document.querySelectorAll('#funnelSvg .funnel-poly').forEach((el, i) => {
+      el.classList.toggle('selected', i === idx);
+    });
+    // Update legend selection
+    document.querySelectorAll('.legend-row').forEach((el, i) => {
+      el.classList.toggle('selected', i === idx);
+    });
+
+    // Populate detail panel
+    const detail = document.getElementById('stageDetail');
+    detail.innerHTML = `
+      <div class="detail-header">
+        <div class="detail-stage-dot" style="background:${color}"></div>
+        <div class="detail-stage-name">${stage.name}</div>
+        <div class="detail-vol-badge">${stage.volume}% of audience</div>
+      </div>
+
+      <div class="detail-section">
+        <div class="detail-section-title">Recommended Channels</div>
+        <div class="chip-list">
+          ${stage.channels.map(c => `<span class="chip">${c}</span>`).join('')}
+        </div>
+      </div>
+
+      <div class="detail-section">
+        <div class="detail-section-title">Content Ideas</div>
+        <div class="chip-list">
+          ${stage.contentIdeas.map(c => `<span class="chip">${c}</span>`).join('')}
+        </div>
+      </div>
+
+      <div class="detail-section">
+        <div class="detail-section-title">KPIs to Track</div>
+        <div class="kpi-list">
+          ${stage.kpis.map(k => `<div class="kpi-item">${k}</div>`).join('')}
+        </div>
+      </div>
+
+      <div class="detail-section">
+        <div class="detail-section-title">Drop-Off Risk</div>
+        <div class="risk-box">
+          <svg class="risk-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+          ${stage.dropOffRisk}
+        </div>
+      </div>
+    `;
+  }
+
+  function renderBudget(allocation, stages) {
+    const el = document.getElementById('budgetBars');
+    el.innerHTML = Object.entries(allocation).map(([name, pct]) => {
+      const color = STAGE_COLORS[name] || '#6366f1';
+      return `<div class="budget-row">
+        <div class="budget-label">
+          <div class="budget-label-dot" style="background:${color}"></div>
+          ${name}
+        </div>
+        <div class="budget-bar-wrap">
+          <div class="budget-bar" style="width:0%;background:${color}" data-target="${pct}"></div>
+        </div>
+        <div class="budget-pct">${pct}%</div>
+      </div>`;
+    }).join('');
+
+    // Animate bars on next frame
+    requestAnimationFrame(() => {
+      document.querySelectorAll('.budget-bar[data-target]').forEach(bar => {
+        bar.style.width = bar.dataset.target + '%';
+      });
+    });
+  }
+
+  function showStatus(msg, type, spinner = false) {
+    const el = document.getElementById('mainStatus');
+    el.className = `status-bar show ${type}`;
+    el.innerHTML = (spinner && type === 'loading')
+      ? `<div class="spinner"></div>${msg}`
+      : (type === 'ok' ? '✓ ' : type === 'err' ? '✗ ' : '') + msg;
+  }
+
+  function hideResults() {
+    document.getElementById('results').style.display = 'none';
+    document.getElementById('stageDetail').innerHTML = `
+      <div class="stage-detail-empty">
+        <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+        <p>Click a funnel stage to see its action plan</p>
+      </div>`;
+  }
+
+  function resetUI() {
+    currentData = null; selectedIdx = null;
+    hideResults();
+    document.getElementById('mainStatus').classList.remove('show');
+    document.getElementById('industry').value = '';
+    document.getElementById('icp').value = '';
+    document.getElementById('budget').selectedIndex = 0;
+    document.getElementById('goal').selectedIndex = 0;
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  // Submit on Ctrl/Cmd+Enter inside textareas
+  ['industry', 'icp'].forEach(id => {
+    document.getElementById(id).addEventListener('keydown', e => {
+      if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') generateFunnel();
+    });
+  });
+</script>
+</body>
+</html>

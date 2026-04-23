@@ -4,6 +4,7 @@ import path from "path";
 import projectsHandler from "./api/projects/index";
 import runHandler from "./api/analysis/run";
 import marketResearchHandler from "./api/market-research";
+import funnelStrategyHandler from "./api/funnel-strategy";
 import analysisHandler from "./api/analysis/[project_id]";
 import metaConnectHandler from "./api/meta/connect";
 import metaCallbackHandler from "./api/meta/callback";
@@ -21,8 +22,14 @@ app.get("/market-research", (_req, res) => {
   res.sendFile(path.join(__dirname, "public", "market-research.html"));
 });
 
+// Clean URL for funnel strategy page (no .html)
+app.get("/funnel-strategy", (_req, res) => {
+  res.sendFile(path.join(__dirname, "public", "funnel-strategy.html"));
+});
+
 app.all("/api/projects", (req, res) => projectsHandler(req as any, res as any));
 app.all("/api/market-research", (req, res) => marketResearchHandler(req as any, res as any));
+app.all("/api/funnel-strategy", (req, res) => funnelStrategyHandler(req as any, res as any));
 app.all("/api/analysis/run", (req, res) => runHandler(req as any, res as any));
 app.all("/api/analysis/:project_id", (req, res) => {
   const merged = Object.create(req);
